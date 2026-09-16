@@ -4,7 +4,7 @@ import os, json, time
 B = "http://localhost:8790"
 PAGES = ["index", "what-we-do", "products", "projects", "community", "about", "careers", "contact"]
 os.makedirs("docs/screenshots", exist_ok=True)
-FORCE = """() => { document.querySelectorAll('[data-reveal], .lines').forEach(e => e.classList.add('in')); document.querySelectorAll('.progress > i[data-w]').forEach(b => b.style.width = b.dataset.w); document.querySelectorAll('.world').forEach(w => { w.style.position = 'absolute'; w.style.height = document.documentElement.scrollHeight + 'px'; }); window.scrollTo(0,0); }"""
+FORCE = """() => { document.querySelectorAll('[data-reveal], .lines').forEach(e => e.classList.add('in')); document.querySelectorAll('.progress > i[data-w]').forEach(b => b.style.width = b.dataset.w); document.querySelectorAll('img[loading=lazy]').forEach(i => i.loading = 'eager'); document.querySelectorAll('.world').forEach(w => { w.style.position = 'absolute'; w.style.height = document.documentElement.scrollHeight + 'px'; }); window.scrollTo(0,0); }"""
 with sync_playwright() as p:
     b = p.chromium.launch(channel="msedge", headless=True)
     for w, h, label in ((1440, 900, "desktop"), (390, 844, "mobile")):
