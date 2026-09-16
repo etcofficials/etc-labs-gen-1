@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Admin — ETC Labs — Gen 1</title>
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #07070b; color: #e6e6f0; font: 15px/1.6 Inter, system-ui, sans-serif; padding: 24px; box-sizing: border-box; }
+    .box { max-width: 520px; border: 1px solid rgba(255,255,255,.12); border-radius: 16px; padding: 28px; background: #101018; }
+    h1 { font-size: 1.15rem; margin: 0 0 8px; } p { margin: 0 0 12px; color: #a9a6c4; } code { color: #22d3ee; } a { color: #22d3ee; }
+  </style>
+</head>
+<body>
+  <div class="box" id="box"><h1>ETC Labs admin</h1><p id="msg">Redirecting to the admin dashboard&hellip;</p></div>
+  <script src="../assets/js/config.js"></script>
+  <script>
+    (function () {
+      var base = (window.ETC_CONFIG && window.ETC_CONFIG.apiBase || "").replace(/\/+$/, "");
+      var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+      if (base) { location.replace(base + "/admin/"); return; }
+      document.getElementById("msg").innerHTML = local
+        ? "You are viewing the static copy of the site. Run the backend (<code>python -m uvicorn server.app:app --port 8790</code>) and open <a href=\"http://localhost:8790/admin/\">http://localhost:8790/admin/</a>."
+        : "The admin dashboard runs on the backend, not on this static host. No backend URL is configured yet: deploy the backend, then set <code>apiBase</code> in <code>assets/js/config.js</code> and redeploy. The dashboard will then be at <code>&lt;backend-url&gt;/admin/</code>.";
+    })();
+  </script>
+</body>
+</html>

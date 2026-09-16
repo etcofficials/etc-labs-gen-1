@@ -1,0 +1,28 @@
+# Fly.io config — alternative backend host with a persistent volume (`fly launch` picks this up).
+app = "etc-labs-gen-1-api"
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  ETC_DATA_DIR = "/var/data"
+  ETC_SECURE_COOKIES = "1"
+  ETC_ALLOWED_ORIGINS = "https://etcofficials.github.io"
+  PORT = "8000"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false
+  min_machines_running = 1
+
+[[mounts]]
+  source = "etc_data"
+  destination = "/var/data"
+
+[checks.health]
+  type = "http"
+  path = "/api/health"
+  interval = "30s"
+  timeout = "5s"

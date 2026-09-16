@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "etc-labs", "runtimeExecutable": "python", "runtimeArgs": ["-m", "uvicorn", "server.app:app", "--port", "8790"], "port": 8790 }
+  ]
+}

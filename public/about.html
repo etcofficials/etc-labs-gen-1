@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — ETC Labs — Gen 1</title>
+  <meta name="description" content="What ETC Labs — Gen 1 is, why it exists, what it is experimenting with, how things are built, the design and technology philosophy, and where it is going. An independent showcase, not affiliated with MXT.">
+  <meta name="theme-color" content="#07070b">
+  <link rel="canonical" href="https://etcofficials.github.io/etc-labs-gen-1/about.html">
+  <meta property="og:site_name" content="ETC Labs — Gen 1">
+  <meta property="og:title" content="About — ETC Labs — Gen 1">
+  <meta property="og:description" content="What ETC Labs — Gen 1 is, why it exists, what it is experimenting with, how things are built, the design and technology philosophy, and where it is going. An independent showcase, not affiliated with MXT.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://etcofficials.github.io/etc-labs-gen-1/about.html">
+  <meta property="og:image" content="https://etcofficials.github.io/etc-labs-gen-1/assets/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/world.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body data-page="about" class="is-entering">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <etc-nav></etc-nav>
+  <main id="main">
+
+    <section class="hero" data-tone="violet" aria-labelledby="hero-title"><div class="container"><div class="split">
+      <div><span class="kicker" data-reveal>About ETC Labs</span><h1 id="hero-title" class="display" data-lines>Make advanced<br>technology feel<br><span class="grad">effortless.</span></h1><p class="lead mt-3" data-reveal style="--i:3">ETC Labs &mdash; Gen 1 is an independent personal technology showcase. One builder, one lab: design, engineering, infrastructure and a creator community, built end to end and shown honestly.</p></div>
+      <div class="abstract" data-reveal="scale" style="--i:2" role="img" aria-label="Abstract composition"><i class="a3"></i><i class="a2"></i><i class="a1"></i><i class="a4"></i><span class="cap">design &times; engineering &times; infrastructure</span></div>
+    </div></div></section>
+    <section class="section flush" data-tone="violet" aria-label="The ETC Labs story"><div class="container">
+      <div class="stage-note" data-reveal style="max-width:820px;margin-bottom:clamp(40px,6vw,72px)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div><strong>Early stage, on purpose.</strong> ETC Labs is not a company with employees, customers or revenue. It is a lab: the work on this site is the claim, and we&rsquo;d rather grow into bigger claims than start with them. It is an independent project and is not affiliated with MXT.</div></div>
+      <div class="story" data-reveal><div class="side"><span class="kicker">01</span><h2>What it is</h2></div><div class="body"><p>ETC Labs &mdash; Gen 1 is a technology showcase built by one person to demonstrate the whole stack: frontend development, UI/UX and product design, animation and interaction, responsive engineering, a real backend with a database, authentication and an admin system, and a clean Git-based deployment.</p><p>&ldquo;Gen 1&rdquo; is literal: this is the first generation. Everything here either works today or is labelled as planned.</p></div></div>
+      <div class="story" data-reveal><div class="side"><span class="kicker">02</span><h2>Why it exists</h2></div><div class="body"><p>Most portfolios show screenshots. This one runs. The forms store real submissions, the admin dashboard really authenticates and really reads the database, the creator directory was really verified, and the deployment is really split between a static host and a private backend. The point is to show serious engineering underneath a visual experience &mdash; and to be honest about what is and isn&rsquo;t built yet.</p></div></div>
+      <div class="story" data-reveal><div class="side"><span class="kicker">03</span><h2>What it is experimenting with</h2></div><div class="body"><p>A single coherent animated &ldquo;world&rdquo; that stays at 60 fps on throttled CPUs; a product-mock kit that makes unbuilt ideas legible without faking screenshots; a community concept that starts from verified people rather than vanity metrics; and small tools &mdash; file transfer, voice rooms, AI utilities &mdash; that may or may not deserve to exist.</p></div></div>
+      <div class="story" data-reveal><div class="side"><span class="kicker">04</span><h2>How things are built</h2></div><div class="body"><p><strong>Design philosophy:</strong> futuristic, not cluttered. Neon is an accent, not a background. Motion is connected to state and interaction, never decoration for its own sake, and it steps back on phones and under reduced-motion.</p><p><strong>Technology philosophy:</strong> the simplest thing that is genuinely robust. Vanilla HTML, CSS and JavaScript on the front; Python, FastAPI and SQLite on the back; secrets in environment variables; validation on the server; least privilege everywhere.</p><div class="principles" id="principles"></div></div></div>
+      <div class="story" data-reveal><div class="side"><span class="kicker">05</span><h2>Where it&rsquo;s going</h2></div><div class="body"><div class="timeline"><div class="tl-item" data-status="done"><div class="panel" style="padding:16px 18px"><div class="tl-meta"><h3 style="font-size:1rem;margin:0">Gen 1 &mdash; website, backend, admin, deployment</h3><span class="badge badge-done">Completed</span></div><p class="small muted">The full stack, built and documented.</p></div></div><div class="tl-item" data-status="progress"><div class="panel" style="padding:16px 18px"><div class="tl-meta"><h3 style="font-size:1rem;margin:0">Creator directory &rarr; community spaces</h3><span class="badge badge-progress">In progress</span></div><p class="small muted">Growing the verified directory into rooms, circles and challenges.</p></div></div><div class="tl-item" data-status="planned"><div class="panel" style="padding:16px 18px"><div class="tl-meta"><h3 style="font-size:1rem;margin:0">Transfer &middot; Voice Rooms &middot; AI Utilities &middot; Creator Toolkit</h3><span class="badge badge-planned">Planned / exploring</span></div><p class="small muted">Directions, not dates. Everything on the <a class="link" href="products.html#roadmap">roadmap</a> is labelled with its real status.</p></div></div></div></div></div>
+    </div></section>
+    <section class="section" id="who" data-tone="cyan" aria-labelledby="team-title"><div class="container"><div class="head split-head"><div><span class="kicker" data-reveal>Who is behind it</span><h2 id="team-title" data-reveal style="--i:1">One builder, for now.</h2></div><p class="lead" data-reveal style="--i:2">No invented team. ETC Labs — Gen 1 is designed, built, tested, deployed and documented by one person.</p></div><div class="team-grid" id="team"></div></div></section>
+    <section class="section" data-tone="violet" aria-labelledby="cta-title"><div class="container"><div class="cta-band" data-reveal="scale"><div><h2 id="cta-title">Want to build with the lab — or have it build for you?</h2><p class="lead">Projects, collaborations and applications all start with one message.</p></div><div class="actions"><a class="btn btn-primary solid lg" href="contact.html">Contact ETC Labs <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a><a class="btn btn-secondary lg" href="careers.html">Open roles</a></div></div></div></section>
+  </main>
+  <etc-footer></etc-footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/world.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+</body>
+</html>

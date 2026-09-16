@@ -1,0 +1,28 @@
+# Render Blueprint — deploys the ETC Labs backend (API + admin) as a Docker web service with a persistent disk.
+# Deploy: https://dashboard.render.com/blueprints → "New Blueprint Instance" → pick this repo.
+# The persistent disk keeps the SQLite database and resumes across deploys (disks require a paid instance type;
+# on the free tier data resets on every deploy — see README "Backend deployment").
+services:
+  - type: web
+    name: etc-labs-gen-1-api
+    runtime: docker
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /api/health
+    disk:
+      name: etc-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: ETC_DATA_DIR
+        value: /var/data
+      - key: ETC_SECURE_COOKIES
+        value: "1"
+      - key: ETC_ALLOWED_ORIGINS
+        value: https://etcofficials.github.io
+      - key: ETC_ADMIN_USER
+        value: admin
+      - key: ETC_ADMIN_PASSWORD_HASH
+        sync: false          # paste the hash from `python -m server.cli set-admin-password` in the Render dashboard
+      - key: ETC_SECRET_KEY
+        generateValue: true  # Render generates a random value; never stored in the repo

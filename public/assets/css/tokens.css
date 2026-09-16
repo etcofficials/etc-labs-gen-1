@@ -1,0 +1,76 @@
+/* ==========================================================================
+   ETC Labs — Gen 1 · Design tokens
+   One dark world. Neon is energy inside it, not paint on top of it.
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* Space */
+  --bg: #07070b;
+  --bg-2: #0b0b12;
+  --graphite: #111118;
+  --panel: #14141d;
+  --panel-2: #191924;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.14);
+  --line-hi: rgba(255, 255, 255, 0.24);
+
+  /* Ink */
+  --text: #eef0f6;
+  --text-2: #c3c7d4;
+  --muted: #8f95a8;
+  --muted-2: #626879;
+
+  /* Energy */
+  --cyan: #22d3ee;      --cyan-rgb: 34, 211, 238;
+  --blue: #60a5fa;      --blue-rgb: 96, 165, 250;
+  --violet: #8b5cf6;    --violet-rgb: 139, 92, 246;
+  --magenta: #e879f9;   --magenta-rgb: 232, 121, 249;
+  --green: #34d399;     --green-rgb: 52, 211, 153;
+  --amber: #fbbf24;
+  --red: #fb7185;
+
+  /* Gradients (use sparingly) */
+  --g-cyan-blue: linear-gradient(120deg, #22d3ee, #60a5fa);
+  --g-violet-magenta: linear-gradient(120deg, #8b5cf6, #e879f9);
+  --g-cyan-violet: linear-gradient(120deg, #22d3ee, #8b5cf6);
+  --g-energy: linear-gradient(120deg, #22d3ee 0%, #8b5cf6 55%, #e879f9 100%);
+
+  /* Section tone (the world reacts to it) */
+  --tone-rgb: var(--violet-rgb);
+
+  /* Type */
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs-xs: 0.78rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-h3: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
+  --fs-h2: clamp(1.8rem, 1.25rem + 2.2vw, 2.9rem);
+  --fs-h1: clamp(2.4rem, 1.5rem + 4vw, 4.6rem);
+  --fs-display: clamp(2.8rem, 1.6rem + 5.4vw, 6rem);
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: clamp(18px, 4vw, 44px);
+  --section: clamp(64px, 9vw, 128px);
+  --nav-h: 68px;
+
+  /* Shape */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 24px; --r-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 140ms;
+  --t-base: 260ms;
+  --t-slow: 480ms;
+  --t-world: 30s;
+
+  /* Effects */
+  --shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  --focus: 0 0 0 3px rgba(var(--cyan-rgb), 0.55);
+}
