@@ -75,6 +75,10 @@ Ranking stays "by joined date" (unchanged and labelled). Counts are static with 
   paths and no 404s, forms show the honest not-connected state when `apiBase` is empty, `/admin/` explains or
   redirects, a real cross-origin submission succeeds through CORS, admin routes are not CORS-exposed.
 - `docs/persona_test.py`: 13/13.
+- `docs/live_check.py` (after deployment): all 8 pages on https://etcofficials.github.io/etc-labs-gen-1/ at desktop
+  and mobile — 0 errors, 0 failed requests, 0 overflow, fonts/CSS/JS loaded, mobile menu works, creator avatars
+  and channel links correct, contact links correct, forms in the honest not-connected state, `/admin/` explains
+  that the backend is not configured yet.
 - Test rows removed after each run; the local database is empty (`python -m server.cli stats`).
 
 ### Secrets check before pushing
