@@ -60,8 +60,8 @@ ADMIN_PASSWORD_HASH = os.environ.get("ETC_ADMIN_PASSWORD_HASH", "")
 DISCORD_WEBHOOK_URL = os.environ.get("ETC_DISCORD_WEBHOOK_URL", "").strip()
 
 # Frontend origins allowed to call the public submission API cross-origin (comma-separated).
-# Example for GitHub Pages: ETC_ALLOWED_ORIGINS=https://etcofficials.github.io
-ALLOWED_ORIGINS = [o.strip().rstrip("/") for o in os.environ.get("ETC_ALLOWED_ORIGINS", "").split(",") if o.strip()]
+# Defaults to the GitHub Pages origin of this project; override with ETC_ALLOWED_ORIGINS (set to "-" to disable).
+ALLOWED_ORIGINS = [o.strip().rstrip("/") for o in os.environ.get("ETC_ALLOWED_ORIGINS", "https://etcofficials.github.io").split(",") if o.strip()]
 
 # Cookies: mark Secure when served over HTTPS in production
 SECURE_COOKIES = os.environ.get("ETC_SECURE_COOKIES", "0") == "1"
