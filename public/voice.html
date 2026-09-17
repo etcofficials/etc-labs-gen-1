@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice Rooms — ETC Labs — Gen 1</title>
+  <meta name="description" content="ETC Labs Voice Rooms: peer-to-peer voice for up to six people in the browser. Create a room, share the code, talk. Nothing is recorded or relayed.">
+  <meta name="theme-color" content="#07070b">
+  <link rel="canonical" href="https://etcofficials.github.io/etc-labs-gen-1/voice.html">
+  <meta property="og:site_name" content="ETC Labs — Gen 1">
+  <meta property="og:title" content="Voice Rooms — ETC Labs — Gen 1">
+  <meta property="og:description" content="ETC Labs Voice Rooms: peer-to-peer voice for up to six people in the browser. Create a room, share the code, talk. Nothing is recorded or relayed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://etcofficials.github.io/etc-labs-gen-1/voice.html">
+  <meta property="og:image" content="https://etcofficials.github.io/etc-labs-gen-1/assets/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/world.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
+</head>
+<body data-page="voice" class="is-entering">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <etc-nav></etc-nav>
+  <main id="main">
+
+    <section class="hero" data-tone="blue" aria-labelledby="hero-title"><div class="container"><div class="split top">
+      <div><span class="kicker" data-reveal>Voice Rooms · Live</span><h1 id="hero-title" data-lines>A room code<br>and a microphone.</h1><p class="lead mt-3" data-reveal style="--i:2">Create a room, share the six-letter code, talk. Audio goes directly between browsers (WebRTC); the ETC Labs backend only introduces the peers. Up to six people per room, nothing recorded.</p>
+        <ul class="contact-for mt-3" data-reveal style="--i:3" aria-label="How it works"><li>Works on desktop and phone browsers &mdash; Chrome, Edge, Safari, Firefox</li><li>Mute, participant list, live connection state</li><li>Rooms disappear when the last person leaves</li><li>Strict corporate networks may need a TURN relay &mdash; the room will tell you if it cannot connect</li></ul></div>
+      <div class="panel tool-panel" data-reveal="right" style="--i:2" id="voice-app" aria-live="polite">
+        <div class="tool-state" data-state="lobby">
+          <div class="field"><label for="vname">Your name</label><input class="input" id="vname" maxlength="24" autocomplete="nickname" placeholder="How others will see you"></div>
+          <div class="form-row mt-2"><div class="field"><label for="vcode">Room code</label><input class="input mono" id="vcode" maxlength="12" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="text" placeholder="e.g. k7m2xq"></div><div class="field" style="align-self:end"><button class="btn btn-secondary lg block" type="button" id="vjoin">Join room</button></div></div>
+          <div class="or"><span>or</span></div>
+          <div class="form-status" role="status" aria-live="polite"></div>
+          <button class="btn btn-primary lg block" type="button" id="vcreate">Create a new room <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+          <p class="form-note mt-2">Your browser will ask for microphone permission when you enter a room.</p>
+        </div>
+        <div class="tool-state" data-state="room">
+          <div class="room-head"><div><span class="kicker">Room</span><h3 class="mono" id="rcode"></h3></div><span class="conn" id="rconn"><i></i><span>connecting</span></span></div>
+          <div class="share-row mt-2"><input class="input mono" id="rlink" readonly aria-label="Room link"><button class="btn btn-secondary" type="button" id="rcopy">Copy link</button></div>
+          <ul class="peers mt-3" id="rpeers" aria-label="People in this room"></ul>
+          <div class="form-status" role="status" aria-live="polite"></div>
+          <div class="room-controls mt-3"><button class="btn btn-primary" type="button" id="rmute" aria-pressed="false">Mute</button><button class="btn btn-secondary danger" type="button" id="rleave">Leave</button></div>
+          <div id="raudio" hidden></div>
+        </div>
+        <div class="tool-state" data-state="offline"><span class="kicker">Voice Rooms</span><h3 class="mt-1">Backend not connected</h3><p class="muted">This copy of the site has no backend configured, so rooms cannot be created.</p></div>
+      </div>
+    </div></div></section>
+  </main>
+  <etc-footer></etc-footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/world.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/touch.js"></script>
+  <script src="assets/js/tools.js"></script>
+</body>
+</html>

@@ -15,10 +15,11 @@
   class EtcNav extends HTMLElement {
     connectedCallback() {
       const cur = document.body.dataset.page || "";
-      const link = (n, extra = "") => `<a class="nav-link" href="${n.href}" ${n.key === cur ? 'aria-current="page"' : ""}>${esc(n.label)}${extra}</a>`;
+      const isCur = (n) => n.key === cur || (n.children || []).some((c) => c.key === cur);
+      const link = (n, extra = "") => `<a class="nav-link" href="${n.href}" ${isCur(n) ? 'aria-current="page"' : ""}>${esc(n.label)}${extra}</a>`;
       const groups = [...new Set(M.nav.map((n) => n.group))];
       const desktop = groups.map((g) => M.nav.filter((n) => n.group === g).map((n) => link(n)).join("")).join('<span class="nav-sep" aria-hidden="true"></span>');
-      const mobile = groups.map((g) => `<div class="nav-group"><h4>${esc(g)}</h4>${M.nav.filter((n) => n.group === g).map((n) => link(n, arrow)).join("")}</div>`).join("");
+      const mobile = groups.map((g) => `<div class="nav-group"><h4>${esc(g)}</h4>${M.nav.filter((n) => n.group === g).flatMap((n) => n.children ? [link({ ...n, label: n.label + " · all" }, arrow), ...n.children.map((c) => link(c, arrow))] : [link(n, arrow)]).join("")}</div>`).join("");
       this.innerHTML = `
         <header class="nav" id="site-nav"><div class="nav-inner">
           <a class="brand" href="index.html" aria-label="ETC Labs — Gen 1 — home" ${cur === "home" ? 'aria-current="page"' : ""}><img src="assets/img/etc-logo.svg" alt="ETC Labs" width="126" height="26"><span class="brand-tag">Gen 1</span></a>
@@ -55,6 +56,7 @@
           <div class="footer-brand"><a class="brand" href="index.html" aria-label="ETC Labs — Gen 1 — home"><img src="assets/img/etc-logo.svg" alt="ETC Labs" width="126" height="26"></a><p>ETC Labs — Gen 1 is an independent technology showcase: software, AI systems, digital products, infrastructure and a creator community — designed, built and deployed as one project.</p>
             <div class="social mt-2"><a href="${esc(c.instagram.url)}" target="_blank" rel="noopener noreferrer" aria-label="Instagram ${esc(c.instagram.handle)}" data-cursor="Open">${icon("instagram")}</a><a href="mailto:${esc(c.email)}" aria-label="Email ${esc(c.email)}" data-cursor="Email">${icon("mail")}</a></div></div>
           ${group("Explore", `<a href="index.html">Home</a><a href="what-we-do.html">What We Build</a><a href="products.html">Products</a><a href="projects.html">Projects</a>`)}
+          ${group("Tools", `<a href="transfer.html">Transfer</a><a href="voice.html">Voice Rooms</a><a href="ai.html">AI Utilities</a><a href="toolkit.html">Creator Toolkit</a>`)}
           ${group("Lab", `<a href="community.html">Community</a><a href="about.html">About</a><a href="careers.html">Careers</a><a href="contact.html">Contact</a>`)}
           ${group("Contact", `<a href="mailto:${esc(c.email)}">${esc(c.email)}</a><a href="${esc(c.instagram.url)}" target="_blank" rel="noopener noreferrer">Instagram ${esc(c.instagram.handle)}</a><a href="${esc(c.github)}" target="_blank" rel="noopener noreferrer">Source on GitHub</a>`)}
         </div><div class="footer-bottom"><span>© ${year} ETC Labs — Gen 1 · Independent showcase, not affiliated with MXT</span><span class="status-dot"><i></i>ETC Labs is building</span></div></div></footer>`;
@@ -81,12 +83,12 @@
   const bar = (l) => `<div class="bar"><i></i><i></i><i></i><span>${l}</span></div>`;
   const wave = [35, 60, 80, 55, 90, 45, 70, 30, 65, 85, 50, 40, 75, 55, 30].map((h, k) => `<i style="--h:${h}%;--k:${k}"></i>`).join("");
   const mocks = {
-    transfer: () => `${bar("Transfer · concept")}<div class="box"><b>Drop a file</b>No account · link expires in 24h</div><div class="row2"><i></i><b>launch-cut_v3.mp4</b><span>1.2 GB</span></div><div class="prog"><i></i></div><div class="pill"><i></i>etc.link/k9f2 · copied</div>`,
-    voice: () => `${bar("Voice Rooms · concept")}<div class="avs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="wave">${wave}</div><div class="pill"><i></i>4 in room · 38 ms</div><div class="btns"><i></i><i class="k"></i><i></i></div>`,
-    ai: () => `${bar("AI Utilities · concept")}<div class="prompt">Turn this recording into chapters + a summary</div><div class="out"><div class="line w80" style="--k:0"></div><div class="line w60" style="--k:1"></div><div class="line w40" style="--k:2"></div></div><div class="pill"><i></i>Done · 3 chapters</div>`,
+    transfer: () => `${bar("Transfer")}<div class="box"><b>Drop a file</b>No account · link expires in 24h</div><div class="row2"><i></i><b>launch-cut_v3.mp4</b><span>1.2 GB</span></div><div class="prog"><i></i></div><div class="pill"><i></i>etc.link/k9f2 · copied</div>`,
+    voice: () => `${bar("Voice Rooms")}<div class="avs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="wave">${wave}</div><div class="pill"><i></i>4 in room · 38 ms</div><div class="btns"><i></i><i class="k"></i><i></i></div>`,
+    ai: () => `${bar("AI Utilities")}<div class="prompt">Turn this recording into chapters + a summary</div><div class="out"><div class="line w80" style="--k:0"></div><div class="line w60" style="--k:1"></div><div class="line w40" style="--k:2"></div></div><div class="pill"><i></i>Done · 3 chapters</div>`,
     members: () => `${bar("Submissions Admin")}<div class="grid4"><i class="k"></i><i></i><i></i><i class="k"></i><i></i><i class="k"></i><i></i><i></i></div><div class="pill"><i></i>Admin only</div>`,
     community: () => `${bar("Creator Directory")}<div class="chan"><div class="side"><i class="on"></i><i></i><i></i><i></i><i></i></div><div class="msgs"><div class="msg"><i></i><div class="line w80"></div></div><div class="msg"><i></i><div class="line w60"></div></div><div class="msg"><i></i><div class="line w40"></div></div></div></div><div class="pill"><i></i>#creators · verified</div>`,
-    toolkit: () => `${bar("Creator Toolkit · exploring")}<div class="check"><div><i class="k"></i>Plan this week</div><div><i class="k"></i>Publish schedule</div><div><i></i>Collab request</div><div><i></i>Asset library</div></div>`,
+    toolkit: () => `${bar("Creator Toolkit")}<div class="check"><div><i class="k"></i>Plan this week</div><div><i class="k"></i>Publish schedule</div><div><i></i>Collab request</div><div><i></i>Asset library</div></div>`,
     infra: () => `${bar("Deployment")}<div class="log"><div><b>→</b> build  ok  12.4s</div><div><b>→</b> deploy pages  ok</div><div><b>→</b> health  200  38ms</div><div><b>→</b> rollback  ready</div></div><div class="pill"><i></i>3 services · healthy</div>`,
     world: () => `${bar("World background · 60 fps")}<div class="worldp"><i class="l1"></i><i class="l2"></i><i class="g"></i><span>tone: violet → cyan</span></div><div class="pill"><i></i>4× CPU throttle · 60 fps</div>`,
     tools: () => `${bar("Web tools")}<div class="row2"><i></i><b>Link shortener</b><span>ready</span></div><div class="row2"><i></i><b>Image resize</b><span>ready</span></div><div class="row2"><i></i><b>Quick share</b><span>soon</span></div>`,
@@ -101,16 +103,25 @@
   R.products = (el) => {
     el.innerHTML = M.productGroups.map((g) => {
       const head = `<div class="product-group-head" data-reveal><span class="badge ${g.badge}">${esc(g.label)}</span><h2 id="pg-${g.key}" class="sr-only">${esc(g.label)} products</h2><p>${esc(g.intro)}</p></div>`;
-      let body;
-      if (g.key === "live") body = g.items.map((p) => `<article class="product-feature" data-reveal="scale"><div class="mock-wrap">${M.mock(p.mock, p.accent, true)}</div><div><div class="cluster"><span class="badge ${g.badge}">${esc(p.status)}</span></div><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><div class="problem"><span>Problem it solves</span><p>${esc(p.problem)}</p></div><ul class="keys list-check stack mt-2">${p.keys.map((k) => `<li>${esc(k)}</li>`).join("")}</ul><div class="who-for">${p.who.map((w) => `<span class="chip sm">${esc(w)}</span>`).join("")}</div><div class="mt-3"><a class="btn btn-primary" href="${p.cta.href}">${esc(p.cta.label)} ${arrowUp}</a></div></div></article>`).join("");
-      else if (g.key === "dev") body = `<div class="product-grid">${g.items.map((p, i) => `<article class="product-item" data-reveal style="--i:${i}">${M.mock(p.mock, p.accent, true)}<div class="body"><div class="head-row"><h3 style="margin:0">${esc(p.name)}</h3><span class="badge ${g.badge}">${esc(p.status)}</span></div><p class="mt-1">${esc(p.tagline)}</p><div class="problem"><span>Problem it solves</span><p>${esc(p.problem)}</p></div><ul class="keys">${p.keys.map((k) => `<li>${esc(k)}</li>`).join("")}</ul><div class="who-for">${p.who.map((w) => `<span class="chip sm">${esc(w)}</span>`).join("")}</div><div class="foot">${productCta(p)}</div></div></article>`).join("")}</div>`;
-      else body = `<div class="rows">${g.items.map((p, i) => `<div class="row" data-reveal style="--i:${i}"><span class="num">0${i + 1}</span><div><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><p class="small mt-1"><span class="muted">Why we're looking:</span> ${esc(p.problem)}</p></div><span class="end badge ${g.badge}">${esc(p.status)}</span></div>`).join("")}</div>`;
-      return `<section class="product-group" id="${g.key}" aria-labelledby="pg-${g.key}">${head}${body}</section>`;
+      const body = `<div class="product-grid">${g.items.map((p, i) => `<article class="product-item" data-reveal style="--i:${i}" data-expand>${M.mock(p.mock, p.accent, true)}<div class="body"><div class="head-row"><h3 style="margin:0">${esc(p.name)}</h3><span class="badge ${g.badge} live-pulse">${esc(p.status)}</span></div><p class="mt-1">${esc(p.tagline)}</p>
+        <button class="expand-toggle" type="button" aria-expanded="false"><span>Details</span>${arrow}</button>
+        <div class="expandable"><div class="problem"><span>Problem it solves</span><p>${esc(p.problem)}</p></div><ul class="keys">${p.keys.map((k) => `<li>${esc(k)}</li>`).join("")}</ul><div class="who-for">${p.who.map((w) => `<span class="chip sm">${esc(w)}</span>`).join("")}</div></div>
+        <div class="foot"><a class="btn btn-primary sm" href="${p.cta.href}">${esc(p.cta.label)} ${arrowUp}</a></div></div></article>`).join("")}</div>`;
+      return `<section class="product-group" id="${g.key}" aria-labelledby="pg-${g.key}">${head}${body}${M.productStatusNote ? `<p class="small muted mt-3" data-reveal>${esc(M.productStatusNote)}</p>` : ""}</section>`;
     }).join("");
+    M.wireExpand(el);
+  };
+
+  /* Touch-first expand/collapse for cards: on phones details are collapsed behind a "Details" toggle; on wide screens everything is shown. */
+  M.wireExpand = (root) => {
+    $$("[data-expand] .expand-toggle", root).forEach((btn) => btn.addEventListener("click", () => {
+      const card = btn.closest("[data-expand]"), open = !card.classList.contains("open");
+      card.classList.toggle("open", open); btn.setAttribute("aria-expanded", String(open)); btn.querySelector("span").textContent = open ? "Less" : "Details";
+    }));
   };
 
   R.showcase = (el) => {
-    const picks = [M.productGroups[0].items[0], M.productGroups[1].items[0], M.productGroups[1].items[1]], badge = ["badge-live", "badge-dev", "badge-dev"];
+    const picks = M.productGroups[0].items.slice(0, 3), badge = ["badge-live", "badge-live", "badge-live"];
     el.innerHTML = picks.map((p, i) => `<div class="showcase ${i % 2 ? "flip" : ""}" data-reveal><div class="mock-wrap">${M.mock(p.mock, p.accent, true)}</div><div><span class="badge ${badge[i]}">${esc(p.status)}</span><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><p class="small muted">${esc(p.problem)}</p><div class="mt-2">${productCta(p)}</div></div></div>`).join("");
   };
 
@@ -142,7 +153,7 @@
     });
   };
 
-  R.communityFeatures = (el) => { el.innerHTML = `<div class="feature-grid">${M.communityFeatures.map((f, i) => { const [cls, lbl] = M.communityStatus[f.status]; return `<div data-reveal style="--i:${i}"><span class="badge ${cls} status">${lbl}</span><span class="icon">${icon(f.icon)}</span><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p><span class="tag">${esc(f.tag)}</span></div>`; }).join("")}</div>`; };
+  R.communityFeatures = (el) => { el.innerHTML = `<div class="feature-grid">${M.communityFeatures.map((f, i) => { const [cls, lbl] = M.communityStatus[f.status]; const tag = f.href ? "a" : "div"; return `<${tag} ${f.href ? `href="${esc(f.href)}" data-cursor="Open"` : ""} data-reveal style="--i:${i}"><span class="badge ${cls} status">${lbl}</span><span class="icon">${icon(f.icon)}</span><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p><span class="tag">${esc(f.tag)}${f.href ? " " + arrow : ""}</span></${tag}>`; }).join("")}</div>`; };
   R.communityWhy = (el) => { el.innerHTML = M.communityWhy.map((w, i) => `<div class="why-item" data-reveal style="--i:${i}"><span class="n">0${i + 1}</span><h3>${esc(w.title)}</h3><p>${esc(w.text)}</p></div>`).join(""); };
   R.chips = (el, list) => { el.innerHTML = list.map((t) => `<span class="chip">${esc(t)}</span>`).join(""); };
 
@@ -157,16 +168,25 @@
     el.addEventListener("pointerover", (e) => { const n = e.target.closest(".cg-node"); if (!n) return; $$(`.cg-link[data-n="${n.dataset.n}"], .cg-link[data-m="${n.dataset.n}"]`, el).forEach((l) => l.classList.add("hot")); });
     el.addEventListener("pointerout", (e) => { const n = e.target.closest(".cg-node"); if (!n) return; $$(".cg-link.hot", el).forEach((l) => l.classList.remove("hot")); });
   };
-  R.communityCards = (el) => { el.innerHTML = `<div class="members">${M.communityDemo.map((m, i) => `<div class="member" data-reveal style="--i:${i}"><span class="avatar" style="background:linear-gradient(135deg,${m.color},#4c1d95)">${esc(m.role[0])}</span><div><b>${esc(m.role)}</b><span>${esc(m.skill)} · demo</span></div></div>`).join("")}</div>`; };
+  R.communityCards = (el) => { el.innerHTML = `<div class="members">${M.communityDemo.map((m, i) => `<div class="member" data-reveal style="--i:${i}"><span class="avatar" style="background:linear-gradient(135deg,${m.color},#4c1d95)">${esc(m.role[0])}</span><div><b>${esc(m.role)}</b><span>${esc(m.skill)} · illustration</span></div></div>`).join("")}</div>`; };
 
   R.creators = (el) => {
-    const L = M.creators;
+    const L = M.creators; let sortBy = "joined", totals = null;
     const avatar = (r) => r.avatarUrl ? `<span class="avatar img"><img src="${esc(r.avatarUrl)}" alt="" width="44" height="44" loading="lazy" decoding="async"><b aria-hidden="true">${esc(r.name[0])}</b></span>` : `<span class="avatar">${esc(r.name[0])}</span>`;
-    el.innerHTML = `<div class="board" data-reveal><div class="board-head"><span class="kicker" style="margin:0">Creators</span><span class="small muted">Ranked by ${esc(L.rankedBy)} · verified ${esc(L.verifiedAt)}</span></div><div class="board-row head" aria-hidden="true"><span>Rank</span><span>Creator</span><span>Audience</span><span>Channel</span></div>
-      ${L.rows.map((r) => `<div class="board-row ${r.rank === 1 ? "top" : ""}"><span class="rank">#${String(r.rank).padStart(2, "0")}</span><span class="creator">${avatar(r)}<span><span class="name">${esc(r.name)}</span><span class="handle">${esc(r.handle)}</span></span></span><span class="stat">${r.subscribers ? esc(r.subscribers) : "—"}<small>${r.subscribers ? esc(r.platform) + " subscribers" : "count unavailable"}</small></span><span class="action"><a class="btn btn-secondary sm" href="${esc(r.channelUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(r.name)} on ${esc(r.platform)}" data-cursor="Open">Channel ${arrowUp}</a></span></div>`).join("")}
-      <div class="board-row" style="grid-template-columns:1fr"><span class="small muted center">${esc(L.note)}</span></div></div>`;
-    // if an avatar fails to load, show the initial instead
-    $$(".avatar.img img", el).forEach((img) => { img.addEventListener("error", () => img.parentElement.classList.add("broken")); if (img.complete && img.naturalWidth === 0) img.parentElement.classList.add("broken"); });
+    const pts = (r) => totals && totals[r.handle] ? totals[r.handle] : null;
+    const draw = () => {
+      const rows = [...L.rows]; if (sortBy === "points") rows.sort((a, b) => ((pts(b) && pts(b).points) || 0) - ((pts(a) && pts(a).points) || 0) || a.rank - b.rank);
+      el.innerHTML = `<div class="board" data-reveal><div class="board-head"><span class="kicker" style="margin:0">Creators</span><div class="board-sort" role="group" aria-label="Ranking"><button class="filter-btn" type="button" data-sort="joined" aria-pressed="${sortBy === "joined"}">Joined date</button><button class="filter-btn" type="button" data-sort="points" aria-pressed="${sortBy === "points"}" ${totals ? "" : 'disabled title="Contribution points load from the backend"'}>Contributions</button></div><span class="small muted">verified ${esc(L.verifiedAt)}</span></div><div class="board-row head" aria-hidden="true"><span>Rank</span><span>Creator</span><span>Audience</span><span>Contribution</span><span>Channel</span></div>
+        ${rows.map((r, i) => { const c = pts(r); return `<div class="board-row ${i === 0 ? "top" : ""}" data-reveal style="--i:${i}"><span class="rank">#${String(sortBy === "points" ? i + 1 : r.rank).padStart(2, "0")}</span><span class="creator">${avatar(r)}<span><span class="name">${esc(r.name)}</span><span class="handle">${esc(r.handle)}</span></span></span><span class="stat">${r.subscribers ? esc(r.subscribers) : "—"}<small>${r.subscribers ? esc(r.platform) + " subscribers" : "count unavailable"}</small></span><span class="stat pts">${c ? c.points : "—"}<small>${c ? c.count + " verified" : totals ? "none yet" : "points"}</small></span><span class="action"><a class="btn btn-secondary sm" href="${esc(r.channelUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(r.name)} on ${esc(r.platform)}" data-cursor="Open">Channel ${arrowUp}</a></span></div>`; }).join("")}
+        <div class="board-row" style="grid-template-columns:1fr"><span class="small muted center">${esc(L.note)} Contribution points are recorded by ETC Labs for verified work (projects, collaborations, events, content) and cannot be edited by creators.</span></div></div>`;
+      $$(".avatar.img img", el).forEach((img) => { img.addEventListener("error", () => img.parentElement.classList.add("broken")); if (img.complete && img.naturalWidth === 0) img.parentElement.classList.add("broken"); });
+      $$("[data-sort]", el).forEach((b) => b.addEventListener("click", () => { sortBy = b.dataset.sort; draw(); }));
+      M.reveal();
+    };
+    draw();
+    // contribution points come from the backend; without one the column shows "—" and the toggle stays disabled
+    const API = M.config.apiBase; const staticHost = !API && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+    if (!staticHost) fetch(API + "/api/community/contributions").then((r) => r.json()).then((d) => { if (d && d.ok) { totals = Object.fromEntries(d.totals.map((t) => [t.handle, t])); draw(); } }).catch(() => {});
   };
 
   R.roadmap = (el, filter) => {
@@ -205,3 +225,4 @@
     return select;
   };
 })();
+

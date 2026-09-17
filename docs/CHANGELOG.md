@@ -1,5 +1,35 @@
 # ETC Labs — Gen 1 · Changelog
 
+## Gen 1 completion (2026-09-17) — every product live, touch-first mobile
+
+### Products and projects — no more planned / exploring / in-development
+| Feature | Previous status | Now | How it is real |
+| --- | --- | --- | --- |
+| Transfer | Planned (concept card) | **Live** — `transfer.html` | `POST /api/transfers` streams the file into private storage (25 MB cap, real progress bar), opaque `tr_` ids, expiry 24 h / 3 d / 7 d or 100 downloads, owner-token deletion, attachment-only downloads, opportunistic purge |
+| Voice Rooms | Exploring | **Live** — `voice.html` | Full-mesh WebRTC audio (≤ 6 people) signalled over `WS /ws/voice/{code}`; create/join by code, mic permission, mute, participant list with connection state, leave; tested 3-way in real browser tabs |
+| AI Utilities | Exploring | **Live** — `ai.html` | `POST /api/ai/{summarize,rewrite,ideas,titles}` calls the Claude API from the backend (key in env only), 6,000-char limit, 20/hour per visitor, typed error handling; without a key the page shows an honest "not enabled" state and the API returns 503 `configured:false` |
+| Creator Toolkit | Exploring | **Live** — `toolkit.html` | Local-first ideas board (states, tags, filters), publishing checklist with progress, projects with due dates, JSON export/import with validation; persists across reloads, honest warning if storage is blocked |
+| Creator Directory | In development | **Live** | + admin-verified contribution points served by `GET /api/community/contributions`, ranking toggle (joined date / contributions); creators cannot edit points |
+| Submissions Admin | In development | **Live** | + Contributions page, System panel, CSV export, duplicate protection |
+| Community features (rooms, circles, challenges, skill exchange, lab tools) | Planned / Exploring | **Replaced by real features** | Voice Rooms, Transfer, Lab Tools (open to all — no member gate), Contributions, Get listed; the fictional "demo members" diagram is now labelled an illustration |
+| Roadmap sections | Planned / Exploring items | **"What shipped"** + one "Documented limitation" line | About timeline, products page and community page updated |
+
+### Backend
+- New `server/tools.py` (transfers, voice signalling, AI, contributions, admin system/export) and `server/notify.py` (Discord + SMTP email, background thread, never blocks a submission).
+- New tables `transfers`, `contributions` (+ indexes on created_at). `GET /api/health` now reports configured features.
+- Duplicate protection: same email + role within 24 h → 409 with the existing reference; same email + building within 1 h → 409.
+- Submissions limit raised from 5 to 8 per 10 min per client (room for a corrected resend). CORS extended to the tool endpoints only; admin routes stay same-origin. `Permissions-Policy` now allows the microphone on same-origin pages (it was blocking Voice Rooms when the backend serves the site).
+- Admin extras are registered before the generic `/api/admin/{kind}` routes.
+
+### Mobile experience (touch-first, desktop untouched)
+- `assets/css/mobile.css` + `assets/js/touch.js`: tap feedback on every control, CSS aurora background layer on phones (canvas stays desktop-only), animated section dividers and kicker accents as sections enter, hero accent line, intentional mobile typography and full-width CTAs.
+- Orbit visualization: tap a system → it lights up with its link, one dynamic detail panel appears below with a description and Explore; tap again to open. Keyboard focus still selects; desktop hover still works. Touch targets ≥ 54 px.
+- Routing cards become bordered cards with an animated accent bar; "What we build" rows tap to expand and swap the visual; product cards collapse details behind a "Details" toggle; project filters scroll horizontally; creator rows render as cards with staggered entrance; careers/what-we-build list+detail act as an accordion; inputs are 16 px / 48 px; the mobile menu staggers its groups and shows an active-page indicator; the Tools group lists all four tools.
+- Bug fixed on the way: the page-transition handler ignored `preventDefault`, and `focusin` pre-selected orbit nodes on tap.
+
+### Tests (all passing on a fresh local server)
+audit.py 26 renders (13 pages × desktop/mobile) 0 errors / 0 overflow · e2e.py **48/48** (forms, duplicates, admin, contributions, system, CSV export, transfer API, AI 503) · static_sim.py 20/20 · persona_test.py 13/13 · mobile_test.py **28/28** · perf.py 58–60 fps at 4× CPU throttle (JS 85 KB, CSS 107 KB) · tools walkthrough in a real browser: upload → link → download (bytes identical) → owner delete → expired/invalid states; toolkit persistence, export; AI disabled state; voice 3-way WebRTC with mute and leave.
+
 ## Gen 1 refinement (2026-09-17) — MXT delta audit, 10-creator directory, founder mark
 
 Read-only audit of the current public MXT site compared with ETC Labs. Only the genuinely useful differences were

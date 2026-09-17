@@ -15,13 +15,31 @@
     const nodes = M.build.map((b, i) => { const a = -Math.PI / 2 + (i / M.build.length) * Math.PI * 2; return { ...b, x: cx + Math.cos(a) * R1, y: cy + Math.sin(a) * R1 }; });
     const paths = nodes.map((n, i) => { const mx = (cx + n.x) / 2 + (n.y - cy) * 0.18, my = (cy + n.y) / 2 - (n.x - cx) * 0.18; return `<path class="link" d="M${cx} ${cy} Q${mx} ${my} ${n.x} ${n.y}"/><path class="pulse" d="M${cx} ${cy} Q${mx} ${my} ${n.x} ${n.y}" style="--d:${(i * 0.8).toFixed(1)}s"/>`; }).join("");
     const g = nodes.map((n, i) => `<a class="node" href="${n.href}" data-i="${i}" style="--c:${n.color}" data-cursor="Explore" aria-label="${esc(n.title)}"><g transform="translate(${n.x} ${n.y})"><circle class="halo" r="46"/><circle class="bg" r="40"/><g class="ico" transform="translate(0 -10)">${icons[n.key]}</g><text y="14">${esc(n.title === "Creator & community systems" ? "Community" : n.title)}</text><text y="27" class="sub">${esc(n.key === "community" ? "creator systems" : n.key === "products" ? "our own tools" : n.key === "infra" ? "deploy · scale" : n.key === "ai" ? "agents · automation" : "apps · tools")}</text></g></a>`).join("");
+    const panel = document.createElement("div"); panel.className = "eco-panel"; panel.id = "eco-panel"; panel.setAttribute("aria-live", "polite"); el.insertAdjacentElement("afterend", panel);
     el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ETC Labs ecosystem: a core connected to Software, AI systems, Digital products, Infrastructure and Community">
       <defs><linearGradient id="eco-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="0.6" stop-color="#8b5cf6"/><stop offset="1" stop-color="#e879f9"/></linearGradient><radialGradient id="eco-core" cx="0.35" cy="0.3"><stop offset="0" stop-color="#c4b5fd"/><stop offset="0.55" stop-color="#7c3aed"/><stop offset="1" stop-color="#2e1065"/></radialGradient><radialGradient id="eco-halo"><stop offset="0" stop-color="#8b5cf6" stop-opacity="0.5"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient></defs>
       <circle class="ring" cx="${cx}" cy="${cy}" r="${R1}"/><circle class="ring hi" cx="${cx}" cy="${cy}" r="${R1 - 60}"/><circle class="ring" cx="${cx}" cy="${cy}" r="${R1 + 48}"/>
       ${paths}
       <circle class="core-glow" cx="${cx}" cy="${cy}" r="110" fill="url(#eco-halo)"/>
       <g class="core"><circle cx="${cx}" cy="${cy}" r="58" fill="url(#eco-core)"/><circle cx="${cx}" cy="${cy}" r="58" fill="none" stroke="rgba(255,255,255,.25)"/><text class="core-text" x="${cx}" y="${cy + 6}">ETC</text></g>
-      ${g}</svg><div class="eco-caption">${M.env.finePointer ? "hover a system · click to explore" : "tap a system to explore"}</div>`;
+      ${g}</svg><div class="eco-caption">${M.env.finePointer ? "hover a system · click to explore" : "tap a system · tap again to open"}</div>`;
+    // select a node → highlight it, its link, and show one dynamic detail panel (same panel on every device)
+    let selected = -1;
+    const select = (i) => {
+      selected = i; const b = M.build[i];
+      $$(".node", el).forEach((n) => n.classList.toggle("on", +n.dataset.i === i));
+      $$(".pulse", el).forEach((p, k) => p.style.opacity = k === i ? "1" : "0.35");
+      panel.style.setProperty("--c", b.color);
+      panel.innerHTML = `<span class="kicker">${String(i + 1).padStart(2, "0")} · ${esc(b.title === "Creator & community systems" ? "Community" : b.title)}</span><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p><a class="link-arrow" href="${esc(b.href)}">Explore ${arrow}</a>`;
+      panel.classList.add("show");
+    };
+    el.addEventListener("click", (e) => {
+      const n = e.target.closest(".node"); if (!n) return;
+      const i = +n.dataset.i;
+      if (!M.env.finePointer && selected !== i) { e.preventDefault(); select(i); }   // touch: first tap selects, second opens
+    });
+    if (M.env.finePointer) el.addEventListener("pointerover", (e) => { const n = e.target.closest(".node"); if (n) select(+n.dataset.i); });
+    el.addEventListener("focusin", (e) => { const n = e.target.closest(".node"); if (n && n.matches(":focus-visible")) select(+n.dataset.i); });   // keyboard only; a tap must not pre-select
     // pointer parallax: nodes drift toward the cursor (transform only, rAF-throttled)
     if (M.env.finePointer && !M.env.reduce) {
       const els = $$(".node", el); let raf = null, px = 0, py = 0;
@@ -34,8 +52,9 @@
   function buildRows(list, visual) {
     list.innerHTML = `<div class="rows">${M.build.map((b, i) => `<a class="row" href="${b.href}" data-i="${i}" aria-selected="${i === 0}" data-reveal style="--i:${i}"><span class="num">0${i + 1}</span><div><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></div><span class="end link-arrow">${arrow}</span></a>`).join("")}</div>`;
     const show = (i) => { const b = M.build[i]; visual.innerHTML = `<div class="mock-wrap" style="--tone-rgb:${hexRgb(b.color)}">${M.mock(b.mock, accentName(b.color), true)}</div>`; $$(".row", list).forEach((r) => r.setAttribute("aria-selected", String(+r.dataset.i === i))); };
-    list.addEventListener("pointerover", (e) => { const r = e.target.closest(".row"); if (r) show(+r.dataset.i); });
-    list.addEventListener("focusin", (e) => { const r = e.target.closest(".row"); if (r) show(+r.dataset.i); });
+    list.addEventListener("pointerover", (e) => { if (!M.env.finePointer) return; const r = e.target.closest(".row"); if (r) show(+r.dataset.i); });
+    list.addEventListener("click", (e) => { if (M.env.finePointer) return; const r = e.target.closest(".row"); if (!r) return; if (r.getAttribute("aria-selected") !== "true") { e.preventDefault(); show(+r.dataset.i); } });
+    list.addEventListener("focusin", (e) => { const r = e.target.closest(".row"); if (r && r.matches(":focus-visible")) show(+r.dataset.i); });
     show(0);
   }
   const hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return `${n >> 16}, ${(n >> 8) & 255}, ${n & 255}`; };

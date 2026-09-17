@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import config, db, security
+from . import config, db, notify, security, tools
 
 # ---------------------------------------------------------------- logging
 log = logging.getLogger("etc")
@@ -41,7 +41,7 @@ class SecurityHeaders(BaseHTTPMiddleware):
         path = request.url.path
         resp.headers.setdefault("X-Content-Type-Options", "nosniff")
         resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-        resp.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+        resp.headers.setdefault("Permissions-Policy", "camera=(), microphone=(self), geolocation=()")
         if path.startswith("/admin") or path.startswith("/api"):
             resp.headers.setdefault("X-Frame-Options", "DENY")
             resp.headers.setdefault("Cache-Control", "no-store")
@@ -59,10 +59,11 @@ app.add_middleware(SecurityHeaders)
 if config.ALLOWED_ORIGINS:
     class PublicApiCORS(CORSMiddleware):
         async def __call__(self, scope, receive, send):
-            if scope["type"] == "http" and scope["path"] in ("/api/project-requests", "/api/applications", "/api/health"):
+            if scope["type"] == "http" and (scope["path"] in ("/api/project-requests", "/api/applications", "/api/health", "/api/community/contributions")
+                                             or scope["path"].startswith(("/api/transfers", "/api/voice", "/api/ai"))):
                 return await super().__call__(scope, receive, send)
             return await self.app(scope, receive, send)
-    app.add_middleware(PublicApiCORS, allow_origins=config.ALLOWED_ORIGINS, allow_methods=["POST", "GET", "OPTIONS"], allow_headers=["Content-Type"], allow_credentials=False, max_age=600)
+    app.add_middleware(PublicApiCORS, allow_origins=config.ALLOWED_ORIGINS, allow_methods=["POST", "GET", "DELETE", "OPTIONS"], allow_headers=["Content-Type"], allow_credentials=False, max_age=600)
 
 
 def client_ip(request: Request) -> str:
@@ -81,22 +82,11 @@ def fail(message: str, status: int = 400, field: str | None = None) -> JSONRespo
     return JSONResponse(body, status_code=status)
 
 
-def notify_discord(title: str, lines: list[str]) -> None:
-    """Optional, server-side only. Never includes resume files."""
-    if not config.DISCORD_WEBHOOK_URL:
-        return
-    try:
-        payload = json.dumps({"content": f"**{title}**\n" + "\n".join(lines)}).encode()
-        req = urllib.request.Request(config.DISCORD_WEBHOOK_URL, data=payload, headers={"Content-Type": "application/json", "User-Agent": "ETC-Labs-server"})
-        urllib.request.urlopen(req, timeout=5).read()
-    except Exception as e:  # notification failure must never fail the submission
-        log.warning("discord notify failed: %s", e)
-
-
 # ================================================================ PUBLIC API
 @app.get("/api/health")
 def health():
-    return {"ok": True, "service": "etc-labs-gen-1", "admin_configured": bool(config.ADMIN_PASSWORD_HASH), "time": time.time()}
+    return {"ok": True, "service": "etc-labs-gen-1", "admin_configured": bool(config.ADMIN_PASSWORD_HASH), "time": time.time(),
+            "features": {"transfer": True, "voice": True, "ai": tools._ai_configured(), "notifications": notify.status()}}
 
 
 @app.post("/api/project-requests")
@@ -129,12 +119,14 @@ async def create_project_request(request: Request):
             raise ValueError("Please add a little more detail to your message (at least 20 characters).")
     except ValueError as e:
         return fail(str(e), 422)
+    if dup := db.recent_duplicate("request", data["email"], "building", data["building"], 3600):
+        return fail(f"We already have this request from you (reference {dup}). If you want to add details, email us and quote the reference.", 409)
     data["client_key"] = key
     data["user_agent"] = security.clean(request.headers.get("user-agent"), 300)
     rid = db.insert("request", data)
     db.audit("public", "request.created", rid)
     log.info("project request %s created", rid)
-    notify_discord("New project request", [f"{data['name']} <{data['email']}>", f"Building: {data['building']}", f"Need: {data['need']} · Scale: {data['scale'] or '—'}", f"Open: /admin/#/requests/{rid}"])
+    notify.send("New project request", [f"{data['name']} <{data['email']}>", f"Building: {data['building']}", f"Need: {data['need']} · Scale: {data['scale'] or '—'}", f"Open: /admin/#/requests/{rid}"])
     return ok({"id": rid, "stored": True}, 201)
 
 
@@ -164,6 +156,8 @@ async def create_application(
         }
     except ValueError as e:
         return fail(str(e), 422)
+    if dup := db.recent_duplicate("application", data["email"], "position", data["position"], 24 * 3600):
+        return fail(f"You already applied for this role in the last 24 hours (reference {dup}). We have it — no need to send it again.", 409)
 
     resume_path = resume_name = ""
     resume_size = 0
@@ -182,7 +176,7 @@ async def create_application(
     aid = db.insert("application", data)
     db.audit("public", "application.created", aid)
     log.info("application %s created for %s", aid, data["position"])
-    notify_discord("New application", [f"{data['first_name']} {data['last_name']} · {data['position']}", f"{data['email']} · Discord: {data['discord']}", f"Resume: {'yes' if resume_path else 'no'}", f"Open: /admin/#/applications/{aid}"])
+    notify.send("New application", [f"{data['first_name']} {data['last_name']} · {data['position']}", f"{data['email']} · Discord: {data['discord']}", f"Resume: {'yes' if resume_path else 'no'}", f"Open: /admin/#/applications/{aid}"])
     return ok({"id": aid, "stored": True}, 201)
 
 
@@ -247,6 +241,12 @@ def admin_account(user: str = Depends(current_admin)):
 @app.get("/api/admin/me")
 def admin_me(user: str = Depends(current_admin)):
     return ok({"user": user})
+
+
+# ================================================================ TOOLS (transfer · voice · ai · community) + admin extras
+# Registered before the generic /api/admin/{kind} routes so /api/admin/system, /contributions and /export/* resolve first.
+app.include_router(tools.router)
+app.include_router(tools.admin_routes(current_admin))
 
 
 # ================================================================ ADMIN DATA
@@ -337,3 +337,4 @@ def admin_index():
 
 app.mount("/admin", StaticFiles(directory=config.ADMIN_DIR), name="admin")
 app.mount("/", StaticFiles(directory=config.PUBLIC_DIR, html=True), name="public")
+

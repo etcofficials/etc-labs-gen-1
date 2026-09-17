@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transfer — ETC Labs — Gen 1</title>
+  <meta name="description" content="ETC Labs Transfer: send a file with a link that expires. Drag and drop up to 25 MB, no account, delete it early with your owner link.">
+  <meta name="theme-color" content="#07070b">
+  <link rel="canonical" href="https://etcofficials.github.io/etc-labs-gen-1/transfer.html">
+  <meta property="og:site_name" content="ETC Labs — Gen 1">
+  <meta property="og:title" content="Transfer — ETC Labs — Gen 1">
+  <meta property="og:description" content="ETC Labs Transfer: send a file with a link that expires. Drag and drop up to 25 MB, no account, delete it early with your owner link.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://etcofficials.github.io/etc-labs-gen-1/transfer.html">
+  <meta property="og:image" content="https://etcofficials.github.io/etc-labs-gen-1/assets/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/world.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
+</head>
+<body data-page="transfer" class="is-entering">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <etc-nav></etc-nav>
+  <main id="main">
+
+    <section class="hero" data-tone="cyan" aria-labelledby="hero-title"><div class="container"><div class="split top">
+      <div><span class="kicker" data-reveal>Transfer · Live</span><h1 id="hero-title" data-lines>Send a file<br>with a link.</h1><p class="lead mt-3" data-reveal style="--i:2">Drop a file, get a link, share it. The link stops working after the time you choose or after 100 downloads &mdash; whichever comes first. No account, no app.</p>
+        <ul class="contact-for mt-3" data-reveal style="--i:3" aria-label="How it works"><li>Files up to <b data-max-mb>25</b> MB</li><li>Expires after 24 hours, 3 days or 7 days</li><li>Downloads are served as attachments &mdash; never opened in the browser</li><li>You get a private owner link to delete it early</li></ul></div>
+      <div class="panel tool-panel" data-reveal="right" style="--i:2" id="transfer-app" aria-live="polite">
+        <div class="tool-state" data-state="upload">
+          <label class="file-drop big" id="drop" for="tfile"><input id="tfile" name="file" type="file" aria-describedby="drop-hint"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg></span><div><b data-file-name>Choose a file</b><span id="drop-hint">Tap to browse, or drop a file here</span></div></label>
+          <div class="field mt-3"><label id="ttl-label">Link expires after</label><div class="radio-group" role="radiogroup" aria-labelledby="ttl-label"><label class="radio-chip"><input type="radio" name="ttl" value="24h" checked><span>24 hours</span></label><label class="radio-chip"><input type="radio" name="ttl" value="3d"><span>3 days</span></label><label class="radio-chip"><input type="radio" name="ttl" value="7d"><span>7 days</span></label></div></div>
+          <div class="upload-bar mt-2" aria-hidden="true"><i></i></div>
+          <div class="form-status" role="status" aria-live="polite"></div>
+          <div class="form-foot"><p class="form-note">Stored privately on the ETC Labs backend until it expires, then deleted.</p><button class="btn btn-primary lg" type="button" id="tsend" disabled>Create link <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></button></div>
+        </div>
+        <div class="tool-state form-success" data-state="done"><div class="tick"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div><h3>Your link is ready.</h3><p class="muted" id="tsummary"></p>
+          <div class="share-row"><input class="input mono" id="tlink" readonly aria-label="Share link"><button class="btn btn-primary" type="button" id="tcopy">Copy link</button></div>
+          <p class="small muted mt-2">Owner link (keep this private &mdash; anyone with it can delete the file): <a class="link mono" id="towner" href="#">delete link</a></p>
+          <div class="cluster mt-3"><a class="btn btn-secondary" href="transfer.html">Send another</a></div></div>
+        <div class="tool-state" data-state="download"><span class="kicker">Someone sent you a file</span><h3 id="dname" class="mt-1"></h3><p class="muted" id="dmeta"></p><div class="cluster mt-3"><a class="btn btn-primary lg" id="ddownload" href="#" download>Download <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a><a class="link-arrow" href="transfer.html">Send your own <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><p class="small muted mt-3">Downloads are served as attachments. Only open files from people you trust.</p></div>
+        <div class="tool-state" data-state="owner"><span class="kicker">Owner controls</span><h3 class="mt-1" id="oname"></h3><p class="muted" id="ometa"></p><div class="form-status" role="status"></div><div class="cluster mt-3"><button class="btn btn-secondary danger" type="button" id="odelete">Delete this transfer</button><a class="link-arrow" href="transfer.html">Send another <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
+        <div class="tool-state" data-state="error"><span class="kicker">Transfer</span><h3 class="mt-1" id="ename">This link doesn&rsquo;t work</h3><p class="muted" id="emsg"></p><div class="cluster mt-3"><a class="btn btn-primary" href="transfer.html">Send a file <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></div>
+        <div class="tool-state" data-state="offline"><span class="kicker">Transfer</span><h3 class="mt-1">Backend not connected</h3><p class="muted">This copy of the site has no backend configured, so files cannot be stored. Email <a class="link" href="mailto:etcofficials28@gmail.com">etcofficials28@gmail.com</a> instead.</p></div>
+      </div>
+    </div></div></section>
+  </main>
+  <etc-footer></etc-footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/world.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/touch.js"></script>
+  <script src="assets/js/tools.js"></script>
+</body>
+</html>

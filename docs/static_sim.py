@@ -6,7 +6,7 @@ import io, sys, mimetypes, pathlib, time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 from playwright.sync_api import sync_playwright
 ORIGIN = "https://etcofficials.github.io"; BASE = ORIGIN + "/etc-labs-gen-1/"; PUB = pathlib.Path("public"); API = "http://localhost:8790"
-PAGES = ["index", "what-we-do", "products", "projects", "community", "about", "careers", "contact"]
+PAGES = ["index", "what-we-do", "products", "projects", "tools", "transfer", "voice", "ai", "toolkit", "community", "about", "careers", "contact"]
 results = []
 def check(name, ok, detail=""): results.append(ok); print(("PASS" if ok else "FAIL"), name, "-", str(detail)[:110])
 

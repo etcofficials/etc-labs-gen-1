@@ -2,7 +2,7 @@
 from playwright.sync_api import sync_playwright
 import os, json, time
 B = "http://localhost:8790"
-PAGES = ["index", "what-we-do", "products", "projects", "community", "about", "careers", "contact"]
+PAGES = ["index", "what-we-do", "products", "projects", "tools", "transfer", "voice", "ai", "toolkit", "community", "about", "careers", "contact"]
 os.makedirs("docs/screenshots", exist_ok=True)
 FORCE = """() => { document.querySelectorAll('[data-reveal], .lines').forEach(e => e.classList.add('in')); document.querySelectorAll('.progress > i[data-w]').forEach(b => b.style.width = b.dataset.w); document.querySelectorAll('img[loading=lazy]').forEach(i => i.loading = 'eager'); document.querySelectorAll('.world').forEach(w => { w.style.position = 'absolute'; w.style.height = document.documentElement.scrollHeight + 'px'; }); window.scrollTo(0,0); }"""
 with sync_playwright() as p:

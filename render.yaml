@@ -26,3 +26,15 @@ services:
         sync: false          # paste the hash from `python -m server.cli set-admin-password` in the Render dashboard
       - key: ETC_SECRET_KEY
         generateValue: true  # Render generates a random value; never stored in the repo
+      - key: ETC_SITE_URL
+        value: https://etcofficials.github.io/etc-labs-gen-1
+      - key: ETC_ANTHROPIC_API_KEY
+        sync: false          # optional: enables AI Utilities
+      - key: ETC_TURN_URL
+        sync: false          # optional: TURN relay for Voice Rooms on strict networks
+      - key: ETC_TURN_USER
+        sync: false
+      - key: ETC_TURN_PASS
+        sync: false
+      - key: ETC_NOTIFY_TO
+        sync: false          # optional: email notifications (with ETC_SMTP_* and ETC_NOTIFY_FROM)

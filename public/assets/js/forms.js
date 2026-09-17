@@ -62,6 +62,7 @@
         else { const o = {}; new FormData(form).forEach((v, k) => { o[k] = v; }); body = JSON.stringify(o); }
         const res = await send(url, body, multipart, (p) => { if (bar) bar.style.setProperty("--w", Math.round(p * 100) + "%"); });
         if (res.status === 429) { status(form, "error", (res.data && res.data.error) || "Too many submissions right now. Please try again in a few minutes."); }
+        else if (res.status === 409 && res.data) { status(form, "error", res.data.error); }
         else if (res.status === 422 && res.data) { status(form, "error", res.data.error); if (res.data.field) { const f = form.querySelector(`[name="${res.data.field}"]`)?.closest(".field"); f && setFieldError(f, res.data.error); } }
         else if (res.status >= 500 || !res.data) { status(form, "error", `We couldn&rsquo;t send that right now. Please try again in a moment — or email ${mailto} directly.`); }
         else if (res.data.ok) {

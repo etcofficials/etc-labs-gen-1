@@ -59,6 +59,32 @@ CREATE TABLE IF NOT EXISTS notes (
   body TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS notes_target ON notes(kind, target_id);
+CREATE TABLE IF NOT EXISTS transfers (
+  id TEXT PRIMARY KEY,
+  created_at REAL NOT NULL,
+  expires_at REAL NOT NULL,
+  original_name TEXT NOT NULL,
+  stored_name TEXT NOT NULL,
+  size INTEGER NOT NULL,
+  downloads INTEGER NOT NULL DEFAULT 0,
+  max_downloads INTEGER NOT NULL DEFAULT 100,
+  owner_token TEXT NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  client_key TEXT DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS transfers_expires ON transfers(expires_at, deleted);
+CREATE TABLE IF NOT EXISTS contributions (
+  id TEXT PRIMARY KEY,
+  created_at REAL NOT NULL,
+  creator_handle TEXT NOT NULL,
+  kind TEXT NOT NULL,            -- 'project' | 'collaboration' | 'event' | 'content' | 'other'
+  points INTEGER NOT NULL,
+  note TEXT DEFAULT '',
+  verified_by TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS contributions_handle ON contributions(creator_handle);
+CREATE INDEX IF NOT EXISTS applications_created ON applications(created_at);
+CREATE INDEX IF NOT EXISTS requests_created ON project_requests(created_at);
 CREATE TABLE IF NOT EXISTS audit_log (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_at REAL NOT NULL,
@@ -227,6 +253,81 @@ def login_info() -> dict[str, Any]:
         recent = [dict(r) for r in con.execute("SELECT created_at, actor, action FROM audit_log WHERE action IN ('login.ok','login.failed','logout') ORDER BY id DESC LIMIT 15").fetchall()]
         return {"last_login": last_ok["created_at"] if last_ok else None, "last_login_user": last_ok["actor"] if last_ok else None,
                 "last_failed": last_fail["created_at"] if last_fail else None, "failed_24h": failed_24h, "logins_total": logins_total, "recent": recent}
+
+
+# ---------------------------------------------------------------- duplicates
+def recent_duplicate(kind: str, email: str, key_field: str, key_value: str, window_seconds: int) -> Optional[str]:
+    """Returns the id of a recent submission from the same email for the same position/building, if any."""
+    assert key_field in ("position", "building")
+    with connect() as con:
+        row = con.execute(f"SELECT id FROM {TABLES[kind]} WHERE email = ? AND {key_field} = ? AND created_at >= ? ORDER BY created_at DESC LIMIT 1",
+                          (email, key_value, time.time() - window_seconds)).fetchone()
+        return row["id"] if row else None
+
+
+# ---------------------------------------------------------------- transfers
+def transfer_create(data: dict[str, Any]) -> str:
+    data = dict(data); data.setdefault("id", "tr_" + secrets.token_hex(8)); data.setdefault("created_at", time.time())
+    cols = ", ".join(data.keys()); marks = ", ".join("?" for _ in data)
+    with connect() as con:
+        con.execute(f"INSERT INTO transfers ({cols}) VALUES ({marks})", list(data.values()))
+    return data["id"]
+
+
+def transfer_get(tid: str) -> Optional[dict[str, Any]]:
+    with connect() as con:
+        return row_to_dict(con.execute("SELECT * FROM transfers WHERE id = ?", (tid,)).fetchone())
+
+
+def transfer_count_download(tid: str) -> None:
+    with connect() as con:
+        con.execute("UPDATE transfers SET downloads = downloads + 1 WHERE id = ?", (tid,))
+
+
+def transfer_mark_deleted(tid: str) -> None:
+    with connect() as con:
+        con.execute("UPDATE transfers SET deleted = 1 WHERE id = ?", (tid,))
+
+
+def transfers_expired(now: float) -> list[dict[str, Any]]:
+    with connect() as con:
+        return [dict(r) for r in con.execute("SELECT id, stored_name FROM transfers WHERE deleted = 0 AND (expires_at < ? OR downloads >= max_downloads)", (now,)).fetchall()]
+
+
+def transfers_stats() -> dict[str, Any]:
+    with connect() as con:
+        active = con.execute("SELECT COUNT(*), COALESCE(SUM(size), 0) FROM transfers WHERE deleted = 0 AND expires_at >= ?", (time.time(),)).fetchone()
+        total = con.execute("SELECT COUNT(*), COALESCE(SUM(downloads), 0) FROM transfers").fetchone()
+        return {"active": active[0], "active_bytes": active[1], "total": total[0], "downloads": total[1]}
+
+
+# ---------------------------------------------------------------- contributions (community)
+CONTRIBUTION_KINDS = ["project", "collaboration", "event", "content", "other"]
+
+
+def contribution_add(handle: str, kind: str, points: int, note: str, verified_by: str) -> dict[str, Any]:
+    row = {"id": new_id("ctr"), "created_at": time.time(), "creator_handle": handle, "kind": kind, "points": points, "note": note, "verified_by": verified_by}
+    with connect() as con:
+        con.execute("INSERT INTO contributions (id, created_at, creator_handle, kind, points, note, verified_by) VALUES (?, ?, ?, ?, ?, ?, ?)", list(row.values()))
+    return row
+
+
+def contribution_delete(cid: str) -> bool:
+    with connect() as con:
+        return con.execute("DELETE FROM contributions WHERE id = ?", (cid,)).rowcount > 0
+
+
+def contributions_list(handle: str = "") -> list[dict[str, Any]]:
+    with connect() as con:
+        if handle:
+            return [dict(r) for r in con.execute("SELECT * FROM contributions WHERE creator_handle = ? ORDER BY created_at DESC", (handle,)).fetchall()]
+        return [dict(r) for r in con.execute("SELECT * FROM contributions ORDER BY created_at DESC LIMIT 500").fetchall()]
+
+
+def contributions_totals() -> list[dict[str, Any]]:
+    """Public aggregate: points and count per creator handle. Never includes notes or who verified."""
+    with connect() as con:
+        return [dict(r) for r in con.execute("SELECT creator_handle AS handle, SUM(points) AS points, COUNT(*) AS count, MAX(created_at) AS last_at FROM contributions GROUP BY creator_handle ORDER BY points DESC").fetchall()]
 
 
 def purge_demo() -> int:

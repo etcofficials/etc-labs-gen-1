@@ -20,6 +20,9 @@ ETC.nav = [
   { key: "what-we-do", label: "What We Build", href: "what-we-do.html", group: "Explore" },
   { key: "products", label: "Products", href: "products.html", group: "Explore" },
   { key: "projects", label: "Projects", href: "projects.html", group: "Explore" },
+  { key: "tools", label: "Tools", href: "tools.html", group: "Tools", children: [
+    { key: "transfer", label: "Transfer", href: "transfer.html" }, { key: "voice", label: "Voice Rooms", href: "voice.html" },
+    { key: "ai", label: "AI Utilities", href: "ai.html" }, { key: "toolkit", label: "Creator Toolkit", href: "toolkit.html" } ] },
   { key: "community", label: "Community", href: "community.html", group: "Community" },
   { key: "about", label: "About", href: "about.html", group: "Lab" },
   { key: "careers", label: "Careers", href: "careers.html", group: "Lab" }
@@ -53,7 +56,7 @@ ETC.icons = {
 ETC.build = [
   { key: "software", title: "Software", text: "Websites, web apps and internal tools — like this site, its backend and its admin dashboard.", color: "#22d3ee", mock: "tools", href: "what-we-do.html#software" },
   { key: "ai", title: "AI systems", text: "Assistants, automations and model integrations wired into real workflows.", color: "#8b5cf6", mock: "ai", href: "what-we-do.html#ai" },
-  { key: "products", title: "Digital products", text: "Our own tools and experiments — from concept to something you can actually use.", color: "#e879f9", mock: "transfer", href: "products.html" },
+  { key: "products", title: "Digital products", text: "Our own tools — Transfer, Voice Rooms, AI Utilities and the Creator Toolkit — all usable today.", color: "#e879f9", mock: "transfer", href: "tools.html" },
   { key: "infra", title: "Infrastructure", text: "Deployment, databases, storage and the pipeline that keeps a product online.", color: "#60a5fa", mock: "infra", href: "what-we-do.html#infrastructure" },
   { key: "community", title: "Creator & community systems", text: "A creator directory and community tools — built for people who make things.", color: "#34d399", mock: "community", href: "community.html" }
 ];
@@ -89,31 +92,34 @@ ETC.services = [
 
 /* ---- Products: things ETC Labs is building for people to use ---- */
 ETC.productGroups = [
-  { key: "live", label: "Live", badge: "badge-live", intro: "Usable now. Only what is genuinely running qualifies — we'd rather list one real thing than pad the list.",
+  { key: "live", label: "Live", badge: "badge-live", intro: "Everything here is running right now — open it and use it. No waitlists, no concepts dressed up as products.",
     items: [
-      { name: "Gen 1 Platform", mock: "brand", accent: "cyan", status: "Live", tagline: "This website, its submissions backend and the admin dashboard — the first complete ETC Labs build.",
-        problem: "A showcase should prove the whole stack works: design, motion, forms that store real data, a protected admin and a clean deployment — not just a pretty landing page.",
-        who: ["Visitors", "Collaborators", "Anyone evaluating the work"],
-        keys: ["Futuristic responsive frontend with purposeful motion", "Real applications & contact backend (FastAPI + SQLite)", "Protected admin dashboard with status tracking"],
-        cta: { label: "See how it was built", href: "projects.html#gen1-platform" } }
-    ] },
-  { key: "dev", label: "In development", badge: "badge-dev", intro: "Being built right now. Not released, and details may change.",
-    items: [
-      { name: "Creator Directory", mock: "community", accent: "magenta", status: "In development", tagline: "A verified directory of creators around ETC Labs — real channels, real public counts, no fabricated stats.",
+      { name: "Transfer", mock: "transfer", accent: "cyan", status: "Live", tagline: "Send a file with a link. No account, no app — drop it, copy the link, done.",
+        problem: "Sending a large file shouldn't need an account, an app install or a ten-step upload flow.", who: ["Creators", "Small teams", "Anyone sharing a big file"],
+        keys: ["Drag & drop up to 25 MB, with real upload progress", "Links expire after 24 hours, 3 days or 7 days (or 100 downloads)", "Delete a transfer early with your owner link"],
+        cta: { label: "Open Transfer", href: "transfer.html" } },
+      { name: "Voice Rooms", mock: "voice", accent: "blue", status: "Live", tagline: "A small realtime voice room for up to six people. Share a code, talk.",
+        problem: "Most collaboration tools are noisy. This one is a room code and a microphone.", who: ["Creator groups", "Small teams", "Collaborators"],
+        keys: ["Peer-to-peer WebRTC audio (your voice never touches our server)", "Mute, participant list, connection state, leave", "Works in the browser on desktop and phone"],
+        cta: { label: "Open Voice Rooms", href: "voice.html" } },
+      { name: "AI Utilities", mock: "ai", accent: "violet", status: "Live", tagline: "Summarize, rewrite, generate content ideas and titles — the repetitive parts of creator work.",
+        problem: "Organizing, drafting and formatting eat the hours that should go into making things.", who: ["Creators", "Teams"],
+        keys: ["Four focused tools, one text box, one button", "Runs through the ETC Labs backend — the model key never reaches the browser", "Rate-limited per visitor; honest 'not enabled' state if the server has no key"],
+        cta: { label: "Open AI Utilities", href: "ai.html" } },
+      { name: "Creator Toolkit", mock: "toolkit", accent: "magenta", status: "Live", tagline: "A private workspace for ideas, a publishing checklist and project tracking — saved in your browser.",
+        problem: "Creator workflows are scattered across ten apps. This keeps the everyday ones in one place.", who: ["Creators"],
+        keys: ["Ideas board with status and tags", "Publishing checklist per piece of content", "Export and import your data as JSON — nothing is uploaded"],
+        cta: { label: "Open Creator Toolkit", href: "toolkit.html" } },
+      { name: "Creator Directory", mock: "community", accent: "magenta", status: "Live", tagline: "A verified directory of creators around ETC Labs — real channels, real public counts, no fabricated stats.",
         problem: "Creator lists on the web are usually stale or wrong. This one is verified against each channel and says when it was last checked.", who: ["Creators", "Collaborators"],
-        keys: ["Verified channel links and avatars", "Public subscriber counts with a verification date", "Ranked by joined date, not audience"], cta: { label: "Open the directory", href: "community.html#creators" } },
-      { name: "Submissions Admin", mock: "members", accent: "violet", status: "In development · Internal", tagline: "The internal tool behind the careers and contact forms: search, filters, status flow, notes and secure resume access.",
-        problem: "Submissions should land somewhere a person can actually manage them — with statuses that persist, not an inbox.", who: ["ETC Labs (internal)"],
-        keys: ["Applications: NEW → REVIEWING → SHORTLISTED → INTERVIEW → REJECTED / HIRED", "Project requests with status and notes", "Private resume storage, admin-only download"], cta: { label: "View project", href: "projects.html#submissions-backend" } }
-    ] },
-  { key: "exploring", label: "Exploring", badge: "badge-exploring", intro: "Ideas we're researching or prototyping. No timeline, no promises — listed so you know where we're looking.",
-    items: [
-      { name: "Transfer", mock: "transfer", accent: "cyan", status: "Planned", tagline: "Fast, temporary file sharing with no account and privacy by default.", problem: "Sending a large file shouldn't need an account, an app install or a ten-step upload flow.", who: ["Creators", "Small teams"], keys: [], cta: null },
-      { name: "Voice Rooms", mock: "voice", accent: "blue", status: "Exploring", tagline: "A focused realtime voice room for small teams and creator groups.", problem: "Most collaboration tools are noisy. We're exploring whether a smaller one can just work.", who: ["Creator groups", "Small teams"], keys: [], cta: null },
-      { name: "AI Utilities", mock: "ai", accent: "violet", status: "Exploring", tagline: "Small AI tools for the repetitive parts of creator and team work.", problem: "Organizing, drafting and formatting eat the hours that should go into making things.", who: ["Creators", "Teams"], keys: [], cta: null },
-      { name: "Creator Toolkit", mock: "toolkit", accent: "magenta", status: "Exploring", tagline: "Utilities to help creators organize, publish and collaborate.", problem: "Creator workflows are scattered across ten apps. We're finding out whether one focused toolkit would help.", who: ["Creators"], keys: [], cta: null }
+        keys: ["Verified channel links and avatars", "Public subscriber counts with a verification date", "Ranked by joined date, with admin-verified contribution points"], cta: { label: "Open the directory", href: "community.html#creators" } },
+      { name: "Gen 1 Platform", mock: "brand", accent: "cyan", status: "Live", tagline: "This website, its backend and the admin dashboard — the platform every other product runs on.",
+        problem: "A showcase should prove the whole stack works: design, motion, forms that store real data, a protected admin and a clean deployment.", who: ["Visitors", "Collaborators", "Anyone evaluating the work"],
+        keys: ["Futuristic responsive frontend with purposeful motion", "FastAPI + SQLite backend with validated uploads and rate limits", "Admin dashboard: applications, requests, contributions, system panel, CSV export"],
+        cta: { label: "See how it was built", href: "projects.html#gen1-platform" } }
     ] }
 ];
+ETC.productStatusNote = "Status rule: Live means you can open and use it now. Anything that cannot be delivered on this stack is listed under Documented limitations on the About page — not as a product.";
 
 /* ---- Projects: builds, experiments and showcase pieces ---- */
 ETC.projectCategories = [
@@ -135,28 +141,28 @@ ETC.projects = [
   { id: "world-background", name: "The World Background", category: "design", catLabel: "Interaction · Performance", status: "Live", badge: "badge-live", mock: "world", accent: "cyan",
     problem: "Animated backgrounds usually either look generic or destroy frame rate.", built: "A layered background — base gradient, tone-following lights, a faint grid, a lightweight flow-line canvas capped at 30 fps and desktop only, a pointer light and static noise — that shifts colour with the section in view.", approach: "Fixed layers, CSS transforms, capped canvas work, everything heavy disabled on touch devices and under reduced-motion", desc: "One coherent visual world across every page, measured at 60 fps while scrolling under 4× CPU throttling.",
     focus: ["Canvas", "CSS", "Performance budgets"], links: [{ label: "Scroll this page", href: "index.html" }] },
-  { id: "transfer", name: "Transfer", category: "software", catLabel: "Digital utility", status: "Planned", badge: "badge-planned", mock: "transfer", accent: "cyan",
-    problem: "Sharing a large file still needs an account or an app.", built: "Nothing public yet — the concept is a web app: drop a file, get a link that expires. No sign-up.", approach: "Web app, streaming uploads, privacy-first", desc: "A planned temporary file-sharing tool with no account, no clutter and privacy as the default.",
-    focus: ["Concept", "File handling", "Privacy-first"], links: [] },
-  { id: "voice-rooms", name: "Voice Rooms", category: "software", catLabel: "Realtime", status: "Exploring", badge: "badge-exploring", mock: "voice", accent: "blue",
-    problem: "Collaboration calls are noisy and heavy.", built: "Nothing public yet — exploring a small, focused realtime voice environment for creator groups.", approach: "WebRTC research, small-group UX", desc: "An exploration into a lighter realtime voice room for small teams and creator groups.",
-    focus: ["Research", "WebRTC", "Small-group UX"], links: [] },
-  { id: "ai-utilities", name: "AI Utilities", category: "ai", catLabel: "AI experiments", status: "Exploring", badge: "badge-exploring", mock: "ai", accent: "violet",
-    problem: "Repetitive digital work eats creative time.", built: "Prototyping small AI utilities for drafting, organising and automating — nothing released.", approach: "LLM integrations, workflow automation", desc: "Experiments with AI utilities for creators and teams — drafting, organizing and automating repetitive work.",
-    focus: ["LLM integrations", "Automation", "Prototyping"], links: [] },
-  { id: "creator-toolkit", name: "Creator Toolkit", category: "creative", catLabel: "Creator tools", status: "Exploring", badge: "badge-exploring", mock: "toolkit", accent: "magenta",
-    problem: "Creator workflows are scattered across ten apps.", built: "Nothing yet — researching whether a focused toolkit would actually help.", approach: "Research, creator conversations", desc: "Utilities and workflows to help creators organize, publish and collaborate more efficiently.",
-    focus: ["Research", "Creator workflows"], links: [] }
+  { id: "transfer", name: "Transfer", category: "software", catLabel: "Digital utility", status: "Live", badge: "badge-live", mock: "transfer", accent: "cyan",
+    problem: "Sharing a large file still needs an account or an app.", built: "A no-account file transfer: chunked upload with progress, random opaque IDs, expiry by time or download count, owner-only deletion, attachment-only downloads.", approach: "Streaming multipart upload into private storage, SQLite metadata, opportunistic purge of expired files, nosniff attachment responses", desc: "Drop a file, get a link that expires. Built end to end on the Gen 1 backend.",
+    focus: ["FastAPI", "Streaming uploads", "Privacy-first"], links: [{ label: "Open Transfer", href: "transfer.html" }] },
+  { id: "voice-rooms", name: "Voice Rooms", category: "software", catLabel: "Realtime", status: "Live", badge: "badge-live", mock: "voice", accent: "blue",
+    problem: "Collaboration calls are noisy and heavy.", built: "Peer-to-peer WebRTC audio rooms for up to six people, signalled over a WebSocket on the backend; mute, participant list, connection state and leave.", approach: "Full-mesh WebRTC with STUN (optional TURN via environment), origin-checked signalling, audio never relayed through the server", desc: "A lighter realtime voice room for small teams and creator groups — a room code and a microphone.",
+    focus: ["WebRTC", "WebSockets", "Small-group UX"], links: [{ label: "Open Voice Rooms", href: "voice.html" }] },
+  { id: "ai-utilities", name: "AI Utilities", category: "ai", catLabel: "AI tools", status: "Live", badge: "badge-live", mock: "ai", accent: "violet",
+    problem: "Repetitive digital work eats creative time.", built: "Four server-side AI tools (summarize, rewrite, ideas, titles) behind one API with input limits, per-visitor rate limits and an honest not-enabled state when the server has no model key.", approach: "Claude API from the backend, key in environment only, typed error handling, low-effort responses for speed", desc: "Small AI utilities for creators and teams — drafting, organizing and titling work.",
+    focus: ["Claude API", "Rate limiting", "Server-side keys"], links: [{ label: "Open AI Utilities", href: "ai.html" }] },
+  { id: "creator-toolkit", name: "Creator Toolkit", category: "creative", catLabel: "Creator tools", status: "Live", badge: "badge-live", mock: "toolkit", accent: "magenta",
+    problem: "Creator workflows are scattered across ten apps.", built: "A local-first workspace: ideas board with statuses and tags, a publishing checklist per piece, project tracking, JSON export/import — stored in the browser, no account.", approach: "Local-first (localStorage), zero network calls, keyboard-friendly, mobile-first layout", desc: "Utilities that help creators organize, plan and publish — private to your browser.",
+    focus: ["Local-first", "Creator workflows", "Accessibility"], links: [{ label: "Open Creator Toolkit", href: "toolkit.html" }] }
 ];
 
 /* ---- Community ---- */
 ETC.communityFeatures = [
-  { icon: "showcase", title: "Creator Directory", text: "A verified list of creators around ETC Labs with real channel links and dated public counts.", tag: "Discover", status: "live" },
-  { icon: "rooms", title: "Creator Rooms", text: "Spaces organized by discipline, interest and active project.", tag: "Connect", status: "planned" },
-  { icon: "circle", title: "Build Circles", text: "Small groups working on ideas together, with accountability and feedback.", tag: "Collaborate", status: "planned" },
-  { icon: "trophy", title: "Creation Challenges", text: "Creative and technical challenges that push toward finished work.", tag: "Create", status: "planned" },
-  { icon: "exchange", title: "Skill Exchange", text: "Members teach and learn from each other through practical critique.", tag: "Learn", status: "exploring" },
-  { icon: "tools", title: "Lab Tools", text: "Early access to ETC Labs utilities and experiments as they become usable.", tag: "Build", status: "exploring" }
+  { icon: "showcase", title: "Creator Directory", text: "A verified list of creators around ETC Labs with real channel links, dated public counts and admin-verified contribution points.", tag: "Discover", status: "live" },
+  { icon: "rooms", title: "Voice Rooms", text: "Drop-in voice rooms for up to six people — share a code and talk. Peer-to-peer, nothing recorded.", tag: "Connect", status: "live", href: "voice.html" },
+  { icon: "exchange", title: "Transfer", text: "Send files to collaborators with a link that expires. No account needed.", tag: "Share", status: "live", href: "transfer.html" },
+  { icon: "tools", title: "Lab Tools", text: "AI Utilities and the Creator Toolkit are open to everyone — no membership gate.", tag: "Build", status: "live", href: "tools.html" },
+  { icon: "trophy", title: "Contributions", text: "Verified contributions (projects, collaborations, events, content) are recorded by ETC Labs and shown on the directory.", tag: "Recognize", status: "live", href: "community.html#creators" },
+  { icon: "circle", title: "Get listed", text: "Send what you make and a link to your work; rows are verified by hand before they appear.", tag: "Join", status: "live", href: "contact.html?need=creative" }
 ];
 ETC.communityStatus = { live: ["badge-live", "Live"], planned: ["badge-planned", "Planned"], exploring: ["badge-exploring", "Exploring"] };
 ETC.communityWho = ["Video creators", "Editors", "Designers", "Developers", "Artists", "Streamers", "Writers", "Musicians", "Game creators", "Photographers", "Builders", "Creative teams"];
@@ -166,7 +172,7 @@ ETC.communityWhy = [
   { title: "Learn in public", text: "Share progress, get honest feedback, improve with the community's knowledge." },
   { title: "Get discovered", text: "Show meaningful work and open new paths to collaboration and opportunity." }
 ];
-/* Demo members — fictional roles that illustrate how the community concept works. Clearly labelled as demo in the UI. */
+/* Illustration only — generic roles showing how different skills connect on a project. Not people, not members, not statistics; labelled as an illustration in the UI. */
 ETC.communityDemo = [
   { role: "Developer", skill: "Web & bots", color: "#22d3ee" }, { role: "Designer", skill: "UI & brand", color: "#60a5fa" }, { role: "Video Editor", skill: "Edits & motion", color: "#e879f9" },
   { role: "Artist", skill: "Illustration", color: "#fbbf24" }, { role: "Writer", skill: "Scripts & copy", color: "#34d399" }, { role: "Builder", skill: "Projects & ops", color: "#8b5cf6" }
@@ -198,13 +204,13 @@ ETC.creators = {
 /* ---- Roadmap ---- */
 ETC.roadmap = [
   { title: "Gen 1 — Website, backend & admin", status: "done", label: "Completed", major: true, progress: 100, what: "The public site, the submissions API, private resume storage and the admin dashboard — designed, built, tested and deployed.", why: "Gen 1 had to prove the whole stack end to end before anything else was worth building." },
-  { title: "Creator Directory", status: "progress", label: "In progress", major: true, progress: 70, what: "Verified creator rows are live; adding creators, a contribution signal and a proper submission flow come next.", why: "The community starts with people who can be found and trusted." },
-  { title: "Community spaces", status: "planned", label: "Planned", major: false, what: "Creator rooms, build circles and challenges — the collaboration layer around the directory.", why: "A directory is a list; a community is what people do with it." },
-  { title: "Transfer", status: "planned", label: "Planned", major: false, what: "Temporary, private file sharing with no account.", why: "The first standalone ETC Labs product — small, useful, shippable." },
-  { title: "Voice Rooms", status: "exploring", label: "Exploring", major: false, what: "A focused realtime voice room for small groups.", why: "Only worth building if it can be lighter than what exists." },
-  { title: "AI Utilities & Creator Toolkit", status: "exploring", label: "Exploring", major: false, what: "Small tools for the repetitive parts of creator work.", why: "We're asking creators first instead of guessing." }
+  { title: "Creator Directory + contributions", status: "done", label: "Completed", major: true, progress: 100, what: "Ten verified creator rows with real avatars, plus admin-verified contribution points served by the backend.", why: "The community starts with people who can be found and trusted." },
+  { title: "Transfer", status: "done", label: "Completed", major: false, what: "Temporary, private file sharing with no account — expiry by time or downloads, owner deletion.", why: "The first standalone ETC Labs product — small, useful, shipped." },
+  { title: "Voice Rooms", status: "done", label: "Completed", major: false, what: "Peer-to-peer voice rooms for up to six people, signalled by the backend.", why: "Lighter than what exists, and it actually runs." },
+  { title: "AI Utilities & Creator Toolkit", status: "done", label: "Completed", major: false, what: "Four server-side AI tools and a local-first creator workspace.", why: "The repetitive parts of creator work, handled." },
+  { title: "Documented limitations", status: "limit", label: "Documented limitation", major: false, what: "AI Utilities need a model key on the server; Voice Rooms need a TURN server for the strictest networks; data on Render needs an attached disk. Each is a configuration, not missing code.", why: "Honest boundaries beat fake features." }
 ];
-ETC.roadmapBadge = { done: "badge-done", progress: "badge-progress", planned: "badge-planned", exploring: "badge-exploring" };
+ETC.roadmapBadge = { done: "badge-done", progress: "badge-progress", planned: "badge-planned", exploring: "badge-exploring", limit: "badge-limit" };
 
 /* ---- Who is behind it (no invented team). The founder is the ETC brand entity, represented by the ETC logo. ---- */
 ETC.founder = { name: "ETC", role: "Founder · Builder", label: "Founded by ETC", image: "assets/img/etc-founder.jpg", imageWebp: "assets/img/etc-founder.webp", imageAlt: "ETC — the ETC Labs founder mark: an illustrated figure in an orange hoodie with headphones under a night sky, with the letters ETC",
@@ -216,15 +222,15 @@ ETC.team = [
 ];
 ETC.principles = [
   { tag: "01 / Speed", title: "Move with intent", text: "Speed matters when it comes from clarity, not shortcuts." },
-  { tag: "02 / Honesty", title: "Say what is real", text: "Live means live. Planned means planned. Demo data is labelled demo." },
+  { tag: "02 / Honesty", title: "Say what is real", text: "Live means you can use it now. Limits are documented, not hidden. Illustrations are labelled." },
   { tag: "03 / Quality", title: "Ship work that lasts", text: "Good foundations make every future change easier." }
 ];
 
 /* ---- Careers: collaboration roles for an early-stage lab ---- */
 ETC.roles = [
   { key: "video-editor", title: "Video Editor", team: "Media", type: "Collaboration", remote: true, summary: "Edit videos for ETC Labs and the creators around it — shorts, long-form and promo content.", doing: ["Edit short-form and long-form video for ETC Labs projects and creator collaborations", "Add motion, captions and pacing that keep people watching", "Work with creators and the lab on content direction"], looking: ["A portfolio of finished edits (any platform)", "Comfort with Premiere, DaVinci Resolve, CapCut or similar", "Reliable turnaround and clear communication"], nice: ["Motion graphics or thumbnail design", "Experience editing for creators or gaming channels"] },
-  { key: "community-mod", title: "Community Moderator", team: "Community", type: "Collaboration", remote: true, summary: "Help shape and moderate the ETC Labs community as the creator directory grows into rooms and circles.", doing: ["Moderate community spaces with clear, fair guidelines", "Welcome new members and help them find their room or circle", "Run or support challenges, events and showcases"], looking: ["Experience moderating Discord or similar communities", "Calm judgement and consistency", "Genuine interest in creators and building things"], nice: ["Discord bot / automod configuration", "Experience running events or challenges"] },
-  { key: "web-dev", title: "Web / Backend Developer", team: "Engineering", type: "Collaboration", remote: true, summary: "Build with us on the Gen 1 platform, the creator directory and the next tools.", doing: ["Ship features across the frontend and the FastAPI backend", "Improve deployments, integrations and the admin dashboard", "Turn ideas into working software and document them"], looking: ["Solid JavaScript and/or Python", "Comfort with databases, hosting and Git", "Links to things you've actually built"], nice: ["Discord bot development", "Experience with realtime (WebSocket / WebRTC) systems"] },
-  { key: "ai-engineer", title: "AI / Automation Engineer", team: "AI", type: "Collaboration", remote: true, summary: "Design the logic behind the AI utilities and automations we are exploring.", doing: ["Prototype AI tools and automations", "Work with model integrations, data processing and evaluation", "Explain trade-offs clearly"], looking: ["Strong problem-solving background", "Experience with Python and LLM tooling", "Examples of algorithmic or research work"], nice: ["Open-source contributions", "Familiarity with evaluation and data pipelines"] },
+  { key: "community-mod", title: "Community Moderator", team: "Community", type: "Collaboration", remote: true, summary: "Help shape and moderate the ETC Labs community around the directory, voice rooms and events.", doing: ["Moderate community spaces with clear, fair guidelines", "Welcome new members and help them find their room or circle", "Run or support challenges, events and showcases"], looking: ["Experience moderating Discord or similar communities", "Calm judgement and consistency", "Genuine interest in creators and building things"], nice: ["Discord bot / automod configuration", "Experience running events or challenges"] },
+  { key: "web-dev", title: "Web / Backend Developer", team: "Engineering", type: "Collaboration", remote: true, summary: "Build with us on the Gen 1 platform, Transfer, Voice Rooms and the next tools.", doing: ["Ship features across the frontend and the FastAPI backend", "Improve deployments, integrations and the admin dashboard", "Turn ideas into working software and document them"], looking: ["Solid JavaScript and/or Python", "Comfort with databases, hosting and Git", "Links to things you've actually built"], nice: ["Discord bot development", "Experience with realtime (WebSocket / WebRTC) systems"] },
+  { key: "ai-engineer", title: "AI / Automation Engineer", team: "AI", type: "Collaboration", remote: true, summary: "Improve the AI utilities and build the next automations.", doing: ["Prototype AI tools and automations", "Work with model integrations, data processing and evaluation", "Explain trade-offs clearly"], looking: ["Strong problem-solving background", "Experience with Python and LLM tooling", "Examples of algorithmic or research work"], nice: ["Open-source contributions", "Familiarity with evaluation and data pipelines"] },
   { key: "creator-research", title: "Creator Research", team: "Research", type: "Collaboration", remote: true, summary: "Find creators, trends and opportunities that fit the ETC Labs community.", doing: ["Research creators and communities that fit the directory", "Track trends and surface content ideas", "Help with outreach and first contact"], looking: ["Deep familiarity with YouTube, short-form and creator ecosystems", "Organized research habits", "Clear written communication"], nice: ["A network in creator communities", "Basic analytics or spreadsheet skills"] }
 ];

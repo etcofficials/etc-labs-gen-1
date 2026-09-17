@@ -73,12 +73,50 @@ MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 ALLOWED_RESUME_EXT = {".pdf", ".doc", ".docx"}
 
 # Rate limits (requests per window per client)
-RATE_SUBMIT = (5, 600)     # 5 submissions / 10 min
+RATE_SUBMIT = (8, 600)     # 8 submissions / 10 min (room for a corrected resend; still blocks floods)
 RATE_LOGIN = (6, 900)      # 6 login attempts / 15 min
 RATE_ADMIN = (240, 60)     # 240 admin API calls / min
 
 # Minimum seconds between form render and submit (bots submit instantly)
 MIN_FORM_SECONDS = 3
+
+# ---------------------------------------------------------------- tools (Gen 1 completion)
+SITE_URL = os.environ.get("ETC_SITE_URL", "https://etcofficials.github.io/etc-labs-gen-1").rstrip("/")
+
+# Transfer: temporary file sharing. Files live under DATA_DIR/transfers and are deleted when they expire.
+TRANSFER_DIR = DATA_DIR / "transfers"
+TRANSFER_DIR.mkdir(parents=True, exist_ok=True)
+TRANSFER_MAX_MB = int(os.environ.get("ETC_TRANSFER_MAX_MB", "25"))
+TRANSFER_MAX_BYTES = TRANSFER_MAX_MB * 1024 * 1024
+TRANSFER_TTL_HOURS = {"24h": 24, "3d": 72, "7d": 168}
+TRANSFER_MAX_DOWNLOADS = 100
+RATE_TRANSFER = (10, 3600)   # 10 uploads / hour per client
+
+# Voice rooms: WebRTC peer-to-peer audio, signalled over a WebSocket on this server.
+# STUN is enough on most networks; set a TURN server for strict NATs (TURN credentials are handed to clients by design - use short-lived ones).
+ICE_SERVERS = [{"urls": ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"]}]
+if os.environ.get("ETC_TURN_URL"):
+    ICE_SERVERS.append({"urls": [os.environ["ETC_TURN_URL"]], "username": os.environ.get("ETC_TURN_USER", ""), "credential": os.environ.get("ETC_TURN_PASS", "")})
+VOICE_ROOM_MAX = 6
+
+# AI utilities: server-side only; the key never reaches the browser.
+ANTHROPIC_API_KEY = os.environ.get("ETC_ANTHROPIC_API_KEY", "").strip()
+AI_MODEL = os.environ.get("ETC_AI_MODEL", "claude-opus-5")
+AI_MAX_INPUT_CHARS = 6000
+RATE_AI = (20, 3600)         # 20 AI requests / hour per client
+
+# Email notifications (optional, server-side). Leave empty to disable.
+SMTP_HOST = os.environ.get("ETC_SMTP_HOST", "").strip()
+SMTP_PORT = int(os.environ.get("ETC_SMTP_PORT", "587"))
+SMTP_USER = os.environ.get("ETC_SMTP_USER", "")
+SMTP_PASS = os.environ.get("ETC_SMTP_PASS", "")
+SMTP_TLS = os.environ.get("ETC_SMTP_TLS", "1") == "1"
+NOTIFY_FROM = os.environ.get("ETC_NOTIFY_FROM", SMTP_USER)
+NOTIFY_TO = os.environ.get("ETC_NOTIFY_TO", "").strip()
+EMAIL_ENABLED = bool(SMTP_HOST and NOTIFY_TO and NOTIFY_FROM)
+
+# Data persistence hint: on Render the default ./data inside the container is wiped on every deploy.
+DATA_DIR_EXPLICIT = bool(os.environ.get("ETC_DATA_DIR"))
 
 PUBLIC_DIR = ROOT / "public"
 ADMIN_DIR = ROOT / "admin"

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creator Toolkit — ETC Labs — Gen 1</title>
+  <meta name="description" content="ETC Labs Creator Toolkit: an ideas board, a publishing checklist and project tracking for creators — private, saved in your browser, export and import as JSON.">
+  <meta name="theme-color" content="#07070b">
+  <link rel="canonical" href="https://etcofficials.github.io/etc-labs-gen-1/toolkit.html">
+  <meta property="og:site_name" content="ETC Labs — Gen 1">
+  <meta property="og:title" content="Creator Toolkit — ETC Labs — Gen 1">
+  <meta property="og:description" content="ETC Labs Creator Toolkit: an ideas board, a publishing checklist and project tracking for creators — private, saved in your browser, export and import as JSON.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://etcofficials.github.io/etc-labs-gen-1/toolkit.html">
+  <meta property="og:image" content="https://etcofficials.github.io/etc-labs-gen-1/assets/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/world.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
+</head>
+<body data-page="toolkit" class="is-entering">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <etc-nav></etc-nav>
+  <main id="main">
+
+    <section class="hero" data-tone="magenta" aria-labelledby="hero-title"><div class="container">
+      <div class="split top"><div><span class="kicker" data-reveal>Creator Toolkit · Live</span><h1 id="hero-title" data-lines>Your workspace,<br>your browser.</h1><p class="lead mt-3" data-reveal style="--i:2">Ideas, a publishing checklist and project tracking in one place. Everything is saved locally in this browser &mdash; nothing is uploaded, no account exists. Export a JSON backup any time.</p></div>
+      <div class="toolkit-stats" data-reveal="right" style="--i:2"><div><b data-stat="ideas">0</b><span>ideas</span></div><div><b data-stat="checklist">0</b><span>checklist done</span></div><div><b data-stat="projects">0</b><span>projects</span></div></div></div>
+    </div></section>
+    <section class="section flush" data-tone="magenta" aria-label="Toolkit"><div class="container"><div class="panel tool-panel wide" id="toolkit-app">
+      <div class="tabs" role="tablist" aria-label="Toolkit sections"><button class="tab" role="tab" aria-selected="true" data-tab="ideas" id="tab-ideas">Ideas</button><button class="tab" role="tab" aria-selected="false" data-tab="checklist" id="tab-checklist">Publishing checklist</button><button class="tab" role="tab" aria-selected="false" data-tab="projects" id="tab-projects">Projects</button><div class="tab-spacer"></div><button class="btn btn-secondary sm" type="button" id="tk-export">Export</button><label class="btn btn-secondary sm" for="tk-import-file">Import<input id="tk-import-file" type="file" accept="application/json" hidden></label></div>
+      <div class="form-status" role="status" aria-live="polite" id="tk-status"></div>
+      <section class="tab-panel" role="tabpanel" aria-labelledby="tab-ideas" data-panel="ideas">
+        <form class="tk-add" id="idea-form"><input class="input" name="title" maxlength="120" placeholder="New idea &mdash; e.g. Behind the scenes of the studio move" required aria-label="Idea"><input class="input tags" name="tags" maxlength="60" placeholder="tags, comma separated" aria-label="Tags"><button class="btn btn-primary" type="submit">Add</button></form>
+        <div class="filters mt-2" id="idea-filters" role="group" aria-label="Filter ideas"></div>
+        <ul class="tk-list" id="idea-list" aria-live="polite"></ul>
+      </section>
+      <section class="tab-panel" role="tabpanel" aria-labelledby="tab-checklist" data-panel="checklist" hidden>
+        <form class="tk-add" id="piece-form"><input class="input" name="title" maxlength="120" placeholder="Piece of content &mdash; e.g. Episode 12" required aria-label="Content piece"><button class="btn btn-primary" type="submit">Start checklist</button></form>
+        <div id="piece-list" aria-live="polite"></div>
+      </section>
+      <section class="tab-panel" role="tabpanel" aria-labelledby="tab-projects" data-panel="projects" hidden>
+        <form class="tk-add" id="project-form"><input class="input" name="title" maxlength="120" placeholder="Project &mdash; e.g. Channel rebrand" required aria-label="Project"><input class="input" name="due" type="date" aria-label="Due date"><button class="btn btn-primary" type="submit">Add</button></form>
+        <ul class="tk-list" id="project-list" aria-live="polite"></ul>
+      </section>
+    </div></div></section>
+  </main>
+  <etc-footer></etc-footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/world.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/touch.js"></script>
+  <script src="assets/js/tools.js"></script>
+</body>
+</html>

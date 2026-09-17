@@ -36,7 +36,7 @@
     const s = summary || {};
     const nav = (href, label, count, key) => `<a href="${href}" class="${active === key ? "on" : ""}">${label}${count != null ? `<span class="count">${count}</span>` : ""}</a>`;
     app.innerHTML = `<div class="shell"><aside class="side"><div class="brand"><img src="/admin/logo.svg" alt="ETC Labs"> <span>ADMIN</span></div>
-      ${nav("#/dashboard", "Dashboard", null, "dashboard")}${nav("#/applications", "Applications", s.applications_total, "applications")}${nav("#/requests", "Project requests", s.requests_total, "requests")}${nav("#/settings", "Settings", null, "settings")}
+      ${nav("#/dashboard", "Dashboard", null, "dashboard")}${nav("#/applications", "Applications", s.applications_total, "applications")}${nav("#/requests", "Project requests", s.requests_total, "requests")}${nav("#/contributions", "Contributions", null, "contributions")}${nav("#/system", "System", null, "system")}${nav("#/settings", "Settings", null, "settings")}
       <div class="foot"><span>Signed in as <b>${esc(me)}</b></span><button id="logout" type="button">Sign out</button><a href="/" target="_blank" rel="noopener">View site ↗</a></div></aside>
       <main class="main"><div class="topbar"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div id="topbar-actions"></div></div><div id="view">${body}</div></main></div>`;
     document.getElementById("logout").addEventListener("click", async () => { await api("/logout", { method: "POST" }); me = null; render(); });
@@ -70,6 +70,7 @@
         <div><label>Show</label><select class="select" name="archived"><option value="0" ${!st.archived ? "selected" : ""}>Active</option><option value="1" ${st.archived ? "selected" : ""}>Archived</option></select></div>
         <button class="btn" type="submit">Apply</button></form>
       <div id="list"><div class="loading">Loading…</div></div>`, kind);
+    document.getElementById("topbar-actions").innerHTML = `<a class="btn" href="/api/admin/export/${kind}.csv" download>Export CSV</a>`;
     document.getElementById("filters").addEventListener("submit", (e) => { e.preventDefault(); const f = new FormData(e.target); st.q = f.get("q"); st.status = f.get("status"); if (isApp) st.position = f.get("position"); else st.need = f.get("need"); st.archived = +f.get("archived"); load(); });
     const load = async () => {
       const q = new URLSearchParams({ q: st.q, status: st.status, archived: st.archived, ...(isApp ? { position: st.position } : { need: st.need }) });
@@ -126,6 +127,45 @@
       <div class="panel" style="margin-top:14px"><div class="hd">Where things live</div><div class="bd"><dl class="kv"><dt>Database</dt><dd><code>data/etc-labs.sqlite3</code> (SQLite, on the backend host — set <code>ETC_DATA_DIR</code> to a persistent disk)</dd><dt>Resumes</dt><dd><code>data/uploads/</code> (random file names, served only through this dashboard)</dd><dt>Logs</dt><dd><code>data/logs/server.log</code></dd><dt>Discord notifications</dt><dd>Optional, server-side, via <code>ETC_DISCORD_WEBHOOK_URL</code> in .env</dd></dl></div></div>${acctInfo}`, "settings");
   };
 
+  /* ---------- Contributions (community) ---------- */
+  const renderContributions = async () => {
+    if (!summary) await loadSummary();
+    shell("Contributions", "Verified creator contributions shown on the public directory. Points are recorded here by an admin — creators cannot edit them.", `
+      <div class="panel"><div class="hd">Record a contribution</div><div class="bd"><form class="filters" id="ctr-form">
+        <div><label>Creator handle</label><input class="input" name="handle" placeholder="@handle" required maxlength="60"></div>
+        <div><label>Kind</label><select class="select" name="kind"><option value="project">project</option><option value="collaboration">collaboration</option><option value="event">event</option><option value="content">content</option><option value="other">other</option></select></div>
+        <div><label>Points (1–100)</label><input class="input" name="points" type="number" min="1" max="100" value="10" required></div>
+        <div style="flex:1;min-width:200px"><label>Note (public? no — internal)</label><input class="input" name="note" maxlength="300" placeholder="What was it?"></div>
+        <button class="btn primary" type="submit">Add</button></form><div class="sub" style="margin-top:8px;color:var(--muted)">Handles must match the directory (data.js) exactly for points to appear next to a creator.</div></div></div>
+      <div id="ctr-totals" style="margin-top:14px"></div><div id="ctr-list" style="margin-top:14px"><div class="loading">Loading…</div></div>`, "contributions");
+    const load = async () => {
+      try {
+        const r = await api("/contributions");
+        document.getElementById("ctr-totals").innerHTML = `<div class="panel"><div class="hd">Totals (public)</div><div class="bd">${r.totals.length ? `<div class="table-wrap"><table><thead><tr><th>Creator</th><th>Points</th><th>Entries</th><th>Last</th></tr></thead><tbody>${r.totals.map((t) => `<tr><td><b>${esc(t.handle)}</b></td><td>${t.points}</td><td>${t.count}</td><td>${fmt(t.last_at)}</td></tr>`).join("")}</tbody></table></div>` : '<div class="empty">No contributions recorded yet. The public directory shows "—" for every creator until you add some.</div>'}</div></div>`;
+        document.getElementById("ctr-list").innerHTML = `<div class="panel"><div class="hd">Entries</div><div class="bd">${r.items.length ? `<div class="table-wrap"><table><thead><tr><th>When</th><th>Creator</th><th>Kind</th><th>Points</th><th>Note</th><th>By</th><th></th></tr></thead><tbody>${r.items.map((i) => `<tr><td>${fmt(i.created_at)}</td><td>${esc(i.creator_handle)}</td><td>${esc(i.kind)}</td><td>${i.points}</td><td>${esc(i.note || "")}</td><td>${esc(i.verified_by)}</td><td><button class="btn sm" type="button" data-del="${i.id}">delete</button></td></tr>`).join("")}</tbody></table></div>` : '<div class="empty">Nothing recorded yet.</div>'}</div></div>`;
+      } catch (err) { document.getElementById("ctr-list").innerHTML = `<div class="error">${esc(err.message)}</div>`; }
+    };
+    document.getElementById("ctr-form").addEventListener("submit", async (e) => { e.preventDefault(); const f = new FormData(e.target); try { await api("/contributions", { method: "POST", body: JSON.stringify({ handle: f.get("handle").trim(), kind: f.get("kind"), points: +f.get("points"), note: f.get("note") }) }); toast("Contribution recorded"); e.target.reset(); load(); } catch (err) { toast(err.message); } });
+    document.getElementById("view").addEventListener("click", async (e) => { const b = e.target.closest("[data-del]"); if (!b || !confirm("Delete this contribution entry?")) return; try { await api(`/contributions/${b.dataset.del}`, { method: "DELETE" }); load(); } catch (err) { toast(err.message); } });
+    load();
+  };
+
+  /* ---------- System (operational overview, no secret values) ---------- */
+  const renderSystem = async () => {
+    if (!summary) await loadSummary();
+    shell("System", "Backend health, storage and which optional features are configured. Values of secrets are never shown here.", '<div class="loading">Loading…</div>', "system");
+    try {
+      const s = await api("/system"); const mb = (n) => (n / 1048576).toFixed(1) + " MB"; const yes = (v) => v ? '<span class="status hired">configured</span>' : '<span class="status rejected">not configured</span>';
+      const up = s.uptime_seconds; const upStr = up < 3600 ? Math.round(up / 60) + " min" : up < 86400 ? (up / 3600).toFixed(1) + " h" : (up / 86400).toFixed(1) + " days";
+      document.getElementById("view").innerHTML = `${s.persistence_warning ? `<div class="error" style="margin-bottom:14px">${esc(s.persistence_warning)}</div>` : ""}
+        <div class="detail"><div>
+        <div class="panel"><div class="hd">Service</div><div class="bd"><dl class="kv"><dt>Service</dt><dd>${esc(s.service)} · Python ${esc(s.python)}</dd><dt>Started</dt><dd>${fmt(s.started_at)} (up ${upStr})</dd><dt>Data directory</dt><dd><code>${esc(s.data_dir)}</code> ${s.data_dir_explicit ? "(set by ETC_DATA_DIR)" : "(default — not persistent on Render)"}</dd><dt>Disk</dt><dd>${mb(s.disk.used)} used of ${mb(s.disk.total)} · ${mb(s.disk.free)} free</dd><dt>Database</dt><dd>${mb(s.db_bytes)}</dd><dt>Resumes</dt><dd>${mb(s.uploads_bytes)}</dd><dt>Transfers on disk</dt><dd>${mb(s.transfers_bytes)} · ${s.transfers.active} active (${mb(s.transfers.active_bytes)}) · ${s.transfers.total} ever · ${s.transfers.downloads} downloads</dd><dt>Voice rooms</dt><dd>${s.voice_rooms} open · ${s.voice_peers} people connected right now</dd></dl></div></div>
+        <div class="panel" style="margin-top:14px"><div class="hd">Optional features</div><div class="bd"><dl class="kv"><dt>AI utilities</dt><dd>${yes(s.features.ai)} ${s.features.ai_model ? "· " + esc(s.features.ai_model) : "· set ETC_ANTHROPIC_API_KEY"}</dd><dt>TURN relay (voice)</dt><dd>${yes(s.features.turn)} · set ETC_TURN_URL / USER / PASS for strict networks</dd><dt>Email notifications</dt><dd>${yes(s.features.notifications.email)} · ETC_SMTP_* + ETC_NOTIFY_TO</dd><dt>Discord notifications</dt><dd>${yes(s.features.notifications.discord)}</dd><dt>Secure cookies</dt><dd>${s.features.secure_cookies ? "on" : "off (set ETC_SECURE_COOKIES=1 behind HTTPS)"}</dd><dt>Secret key</dt><dd>${s.features.secret_key_from_env ? "from environment" : "generated file in data dir — set ETC_SECRET_KEY in production"}</dd><dt>Allowed origins</dt><dd>${s.features.allowed_origins.map(esc).join(", ") || "—"}</dd></dl></div></div>
+        </div><div class="actions"><div class="panel"><div class="hd">Limits</div><div class="bd"><dl class="kv"><dt>Resume</dt><dd>${s.limits.resume_mb} MB</dd><dt>Transfer</dt><dd>${s.limits.transfer_mb} MB</dd><dt>Submissions</dt><dd>${s.limits.rate_submit[0]} / ${s.limits.rate_submit[1] / 60} min</dd><dt>Logins</dt><dd>${s.limits.rate_login[0]} / ${s.limits.rate_login[1] / 60} min</dd><dt>AI</dt><dd>${s.limits.rate_ai[0]} / hour</dd><dt>Transfers</dt><dd>${s.limits.rate_transfer[0]} / hour</dd></dl></div></div>
+        <div class="panel"><div class="hd">Health endpoint</div><div class="bd"><a class="btn" href="/api/health" target="_blank" rel="noopener">Open /api/health</a></div></div></div></div>`;
+    } catch (err) { document.getElementById("view").innerHTML = `<div class="error">${esc(err.message)}</div>`; }
+  };
+
   /* ---------- Router ---------- */
   const render = async () => {
     if (me === null) { try { me = (await api("/me")).user; } catch { renderLogin(); return; } }
@@ -133,6 +173,8 @@
     try {
       if (kind === "applications" || kind === "requests") { id ? await renderDetail(kind, id) : await renderList(kind); }
       else if (kind === "settings") await renderSettings();
+      else if (kind === "contributions") await renderContributions();
+      else if (kind === "system") await renderSystem();
       else await renderDashboard();
     } catch (err) { if (err.message !== "Not signed in") { const v = document.getElementById("view"); if (v) v.innerHTML = `<div class="error">${esc(err.message)}</div>`; } }
   };

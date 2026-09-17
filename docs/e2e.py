@@ -20,8 +20,7 @@ s, d = post_json("/api/project-requests", {"name": "TEST Missing", "email": "not
 check("API rejects invalid email (422)", s == 422 and "email" in d.get("error", "").lower(), d)
 s, d = post_json("/api/project-requests", {"name": "TEST Bot", "email": "bot@example.com", "building": "x", "need": "software", "message": "a" * 30, "started_at": started, "website": "http://spam"})
 check("Honeypot: accepted but not stored", s == 200 and d.get("stored") is False, d)
-# (the public rate limit is 5 submissions / 10 min per client; this run uses exactly 5 real submissions, so the
-#  too-fast timing check is covered by docs/perf.py notes and verified manually — see CHANGELOG)
+# (the public rate limit is 8 submissions / 10 min per client; this run uses 6 real submissions)
 
 with sync_playwright() as p:
     b = p.chromium.launch(channel="msedge", headless=True)
@@ -102,6 +101,37 @@ with sync_playwright() as p:
     check("Admin: project requests list shows the test request", "TEST Contact" in pg.inner_text("#list"), "row present")
     pg.goto(B + "/admin/#/requests/" + request_id); pg.wait_for_timeout(900); txt = pg.inner_text("#app")
     check("Admin: request detail shows name/email/building/need/scale/message/date", all(x in txt.lower() for x in ["test contact", "test-contact@example.com", "test booking app", "software", "small", "reminders"]), "fields present")
+    # duplicate protection: same email + position again within 24h → 409 with the existing reference
+    pg.goto(B + "/careers.html", wait_until="load"); pg.wait_for_timeout(600)
+    pg.fill("#firstName", "TEST"); pg.fill("#lastName", "Applicant"); pg.fill("#email", "test-applicant@example.com"); pg.fill("#discord", "test_user#0000"); pg.select_option("#position", "web-dev"); pg.wait_for_timeout(3200); pg.click("#careers-form button[type=submit]"); pg.wait_for_timeout(900)
+    check("Careers: duplicate application within 24h is refused with the existing reference", app_id in pg.eval_on_selector("#careers-form .form-status", "e=>e.textContent"), pg.eval_on_selector("#careers-form .form-status", "e=>e.textContent")[:80])
+    # contributions (admin write → public read)
+    r = pg.request.post(B + "/api/admin/contributions", data=json.dumps({"handle": "@Kajutoo", "kind": "project", "points": 15, "note": "TEST contribution"}), headers={"Content-Type": "application/json", "X-ETC-Admin": "1"})
+    cid = r.json().get("item", {}).get("id"); check("Admin: contribution recorded (201)", r.status == 201 and bool(cid), r.status)
+    r = pg.request.post(B + "/api/admin/contributions", data=json.dumps({"handle": "Kajutoo", "kind": "project", "points": 500}), headers={"Content-Type": "application/json", "X-ETC-Admin": "1"})
+    check("Admin: invalid contribution rejected (422)", r.status == 422, r.json().get("error"))
+    pub = b.new_context().request.get(B + "/api/community/contributions").json()
+    check("Public: contribution totals exposed without notes/verifier", any(t["handle"] == "@Kajutoo" and t["points"] >= 15 for t in pub["totals"]) and "note" not in json.dumps(pub), pub["totals"][:1])
+    pg.goto(B + "/community.html", wait_until="load"); pg.wait_for_timeout(1200); pg.click('[data-sort="points"]'); pg.wait_for_timeout(400)
+    check("Community: ranking by contributions puts @Kajutoo first with points shown", pg.eval_on_selector(".board-row.top .handle", "e=>e.textContent") == "@Kajutoo" and pg.eval_on_selector(".board-row.top .pts", "e=>e.textContent").startswith("15"), pg.eval_on_selector(".board-row.top .pts", "e=>e.textContent"))
+    r = pg.request.delete(B + f"/api/admin/contributions/{cid}", headers={"X-ETC-Admin": "1"}); check("Admin: contribution deleted", r.status == 200, r.status)
+    # system panel + export
+    r = pg.request.get(B + "/api/admin/system"); sysinfo = r.json()
+    check("Admin: system panel reports features without secret values", r.status == 200 and "features" in sysinfo and "ETC_ADMIN_PASSWORD_HASH" not in r.text() and "scrypt$" not in r.text(), list(sysinfo.get("features", {}).keys()))
+    r = pg.request.get(B + "/api/admin/export/applications.csv"); csv_text = r.text()
+    check("Admin: CSV export works, omits internal columns", r.status == 200 and "TEST" in csv_text and "client_key" not in csv_text.splitlines()[0] and "resume_path" not in csv_text.splitlines()[0], csv_text.splitlines()[0][:80])
+    r = b.new_context().request.get(B + "/api/admin/export/applications.csv"); check("Public: CSV export requires login (401)", r.status == 401, r.status)
+    pg.goto(B + "/admin/#/system"); pg.wait_for_timeout(1200); check("Admin UI: System page renders", "Optional features" in pg.inner_text("#view"), "rendered")
+    pg.goto(B + "/admin/#/contributions"); pg.wait_for_timeout(1200); check("Admin UI: Contributions page renders", "Record a contribution" in pg.inner_text("#view"), "rendered")
+    # transfer API: upload → info → download → wrong-token delete → delete
+    r = pg.request.post(B + "/api/transfers", multipart={"file": {"name": "e2e.bin", "mimeType": "application/octet-stream", "buffer": b"x" * 5000}, "ttl": "24h"}); t = r.json()
+    check("Transfer: upload stored (201)", r.status == 201 and t["id"].startswith("tr_"), t.get("id"))
+    r = pg.request.get(B + f"/api/transfers/{t['id']}/download"); check("Transfer: download is an attachment with the exact bytes", r.status == 200 and "attachment" in r.headers.get("content-disposition", "") and len(r.body()) == 5000, r.headers.get("content-type"))
+    r = pg.request.delete(B + f"/api/transfers/{t['id']}?token=nope"); check("Transfer: delete without owner token → 403", r.status == 403, r.status)
+    r = pg.request.delete(B + f"/api/transfers/{t['id']}?token={t['owner_token']}"); check("Transfer: owner delete works", r.status == 200, r.status)
+    r = pg.request.get(B + f"/api/transfers/{t['id']}"); check("Transfer: deleted link → 404", r.status == 404, r.status)
+    r = pg.request.post(B + "/api/transfers", multipart={"file": {"name": "big.bin", "mimeType": "application/octet-stream", "buffer": b"x" * (26 * 1024 * 1024)}, "ttl": "24h"}); check("Transfer: oversize upload rejected (422)", r.status == 422, r.json().get("error"))
+    r = pg.request.post(B + "/api/ai/summarize", data=json.dumps({"text": "x" * 40}), headers={"Content-Type": "application/json"}); check("AI: honest 503 when no key is configured", r.status == 503 and r.json().get("configured") is False, r.status)
     pg.goto(B + "/admin/#/settings"); pg.wait_for_timeout(900); txt = pg.inner_text("#app")
     check("Admin: settings shows login activity + no public accounts note", "Last successful login" in txt and "no user accounts" in txt, "present")
     pg.click("text=Sign out"); pg.wait_for_timeout(900)
@@ -120,6 +150,7 @@ with sync_playwright() as p:
 
 # ---------------- cleanup: remove TEST rows and their resume files
 con = sqlite3.connect("data/etc-labs.sqlite3")
+con.execute("DELETE FROM contributions WHERE note='TEST contribution'"); con.execute("DELETE FROM transfers WHERE original_name IN ('e2e.bin','big.bin')")
 for path, in con.execute("SELECT resume_path FROM applications WHERE first_name='TEST' AND resume_path<>''"):
     f = os.path.join("data", "uploads", path);  os.path.exists(f) and os.remove(f)
 a = con.execute("DELETE FROM applications WHERE first_name='TEST'").rowcount; r = con.execute("DELETE FROM project_requests WHERE name LIKE 'TEST %'").rowcount

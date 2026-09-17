@@ -2,7 +2,7 @@
 import io, sys; sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 from playwright.sync_api import sync_playwright
 B = "https://etcofficials.github.io/etc-labs-gen-1/"
-PAGES = ["", "what-we-do.html", "products.html", "projects.html", "community.html", "about.html", "careers.html", "contact.html"]
+PAGES = ["", "what-we-do.html", "products.html", "projects.html", "tools.html", "transfer.html", "voice.html", "ai.html", "toolkit.html", "community.html", "about.html", "careers.html", "contact.html"]
 with sync_playwright() as p:
     b = p.chromium.launch(channel="msedge", headless=True)
     for w, h, label in ((1440, 900, "desktop"), (390, 844, "mobile")):

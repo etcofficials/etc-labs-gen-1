@@ -17,7 +17,7 @@
   /* ---------- World markup ---------- */
   const world = document.createElement("div");
   world.className = "world"; world.setAttribute("aria-hidden", "true");
-  world.innerHTML = '<div class="world-base"></div><div class="light a"></div><div class="light b"></div><div class="light c"></div><div class="world-grid"></div><canvas class="world-flow"></canvas><div class="world-cursor"></div><div class="world-noise"></div><div class="world-vignette"></div>';
+  world.innerHTML = '<div class="world-base"></div><div class="light a"></div><div class="light b"></div><div class="light c"></div><div class="world-aurora"></div><div class="world-grid"></div><canvas class="world-flow"></canvas><div class="world-cursor"></div><div class="world-noise"></div><div class="world-vignette"></div>';
   document.body.prepend(world);
   const progress = document.createElement("div"); progress.className = "progress-bar"; progress.setAttribute("aria-hidden", "true"); document.body.prepend(progress);
 
@@ -125,7 +125,7 @@
 
   /* ---------- Page transitions (internal links) ---------- */
   document.addEventListener("click", (e) => {
-    const a = e.target.closest("a[href]"); if (!a || reduce) return;
+    const a = e.target.closest("a[href]"); if (!a || reduce || e.defaultPrevented) return;
     const href = a.getAttribute("href");
     if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:") || a.target === "_blank" || /^https?:/i.test(href) || a.hasAttribute("download")) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;

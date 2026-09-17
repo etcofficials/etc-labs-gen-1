@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Utilities — ETC Labs — Gen 1</title>
+  <meta name="description" content="ETC Labs AI Utilities: summarize, rewrite, generate content ideas and titles. Runs through the ETC Labs backend — no keys in the browser, rate-limited per visitor.">
+  <meta name="theme-color" content="#07070b">
+  <link rel="canonical" href="https://etcofficials.github.io/etc-labs-gen-1/ai.html">
+  <meta property="og:site_name" content="ETC Labs — Gen 1">
+  <meta property="og:title" content="AI Utilities — ETC Labs — Gen 1">
+  <meta property="og:description" content="ETC Labs AI Utilities: summarize, rewrite, generate content ideas and titles. Runs through the ETC Labs backend — no keys in the browser, rate-limited per visitor.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://etcofficials.github.io/etc-labs-gen-1/ai.html">
+  <meta property="og:image" content="https://etcofficials.github.io/etc-labs-gen-1/assets/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/world.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
+</head>
+<body data-page="ai" class="is-entering">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <etc-nav></etc-nav>
+  <main id="main">
+
+    <section class="hero" data-tone="violet" aria-labelledby="hero-title"><div class="container"><div class="split top">
+      <div><span class="kicker" data-reveal>AI Utilities · Live</span><h1 id="hero-title" data-lines>The repetitive<br>parts, handled.</h1><p class="lead mt-3" data-reveal style="--i:2">Four focused tools for creators and small teams. Paste text, pick a tool, get a clean result. Requests go through the ETC Labs backend; the model key never reaches your browser.</p>
+        <ul class="contact-for mt-3" data-reveal style="--i:3" aria-label="Notes"><li>Up to 6,000 characters per request</li><li>Rate-limited per visitor to keep it free for everyone</li><li>Nothing you paste is stored &mdash; the text is sent to the model and forgotten</li><li id="ai-model-note">Model: <span data-ai-model>&hellip;</span></li></ul></div>
+      <div class="panel tool-panel" data-reveal="right" style="--i:2" id="ai-app" aria-live="polite">
+        <div class="tool-state" data-state="ready">
+          <div class="filters" id="ai-tools" role="group" aria-label="Tool"></div>
+          <div class="field mt-3" id="ai-tone-field" hidden><label for="ai-tone">Tone</label><select class="select" id="ai-tone"></select></div>
+          <div class="field mt-3"><label for="ai-text">Your text <span class="opt" style="margin-left:auto" id="ai-count">0 / 6000</span></label><textarea class="textarea" id="ai-text" rows="7" maxlength="6000" placeholder="Paste a transcript, a draft, a topic, or a description of your channel&hellip;"></textarea></div>
+          <div class="form-status" role="status" aria-live="polite"></div>
+          <div class="form-foot"><p class="form-note" id="ai-hint">Pick a tool and paste some text.</p><button class="btn btn-primary lg" type="button" id="ai-run" disabled>Run <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></button></div>
+          <div class="ai-output" id="ai-output" hidden><div class="ai-output-head"><span class="kicker" id="ai-output-label">Result</span><div class="cluster"><button class="btn btn-secondary sm" type="button" id="ai-copy">Copy</button><button class="btn btn-secondary sm" type="button" id="ai-again">Run again</button></div></div><pre id="ai-result"></pre></div>
+        </div>
+        <div class="tool-state" data-state="disabled"><span class="kicker">AI Utilities</span><h3 class="mt-1">Not enabled on this deployment yet</h3><p class="muted">The backend is running but has no model key configured, so the tools cannot answer. This is a server configuration (<code>ETC_ANTHROPIC_API_KEY</code>), not a missing feature &mdash; the code path is complete and tested.</p><div class="cluster mt-3"><a class="link-arrow" href="tools.html">Other tools <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
+        <div class="tool-state" data-state="offline"><span class="kicker">AI Utilities</span><h3 class="mt-1">Backend not connected</h3><p class="muted">This copy of the site has no backend configured.</p></div>
+      </div>
+    </div></div></section>
+  </main>
+  <etc-footer></etc-footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/world.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/touch.js"></script>
+  <script src="assets/js/tools.js"></script>
+</body>
+</html>
