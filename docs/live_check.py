@@ -24,4 +24,4 @@ with sync_playwright() as p:
             if name == "" and label == "desktop":
                 pg.screenshot(path="docs/screenshots/live-home-desktop.png")
             ctx.close()
-    ctx = b.new_context(viewport={"width": 1440, "height": 900}); pg = ctx.new_page(); pg.goto(B + "admin/", wait_until="load"); pg.wait_for_timeout(500); print("live /admin/:", pg.inner_text("#msg")[:110]); ctx.close(); b.close()
+    ctx = b.new_context(viewport={"width": 1440, "height": 900}); pg = ctx.new_page(); pg.goto(B + "admin/", wait_until="load"); pg.wait_for_timeout(1500); print("live /admin/ →", pg.url if not pg.url.startswith(B) else pg.inner_text("#msg")[:110]); ctx.close(); b.close()
