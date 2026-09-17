@@ -175,6 +175,15 @@
     $$(".progress > i[data-w]", el).forEach((b) => { const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { b.style.width = b.dataset.w; io.disconnect(); } }); io.observe(b); });
   };
 
+  R.founder = (el) => {
+    const f = M.founder;
+    el.innerHTML = `<article class="founder" data-reveal="scale" aria-labelledby="founder-name">
+      <div class="founder-mark"><picture>${f.imageWebp ? `<source srcset="${esc(f.imageWebp)}" type="image/webp">` : ""}<img src="${esc(f.image)}" alt="${esc(f.imageAlt)}" width="512" height="512" decoding="async"></picture></div>
+      <div class="founder-body"><span class="kicker">${esc(f.label)}</span><h3 id="founder-name">${esc(f.name)}</h3><span class="role">${esc(f.role)}</span><p>${esc(f.text)}</p>${f.quote ? `<p class="team-quote">“${esc(f.quote)}”</p>` : ""}
+        ${f.focus ? `<div class="cluster mt-2" aria-label="Focus areas">${f.focus.map((x) => `<span class="chip sm">${esc(x)}</span>`).join("")}</div>` : ""}
+        ${f.links ? `<div class="cluster mt-3">${f.links.map((l) => `<a class="link-arrow" href="${esc(l.href)}" ${l.external ? 'target="_blank" rel="noopener noreferrer"' : ""}>${esc(l.label)} ${arrowUp}</a>`).join("")}</div>` : ""}</div></article>`;
+    const img = el.querySelector(".founder-mark img"); img && img.addEventListener("error", () => el.querySelector(".founder-mark").classList.add("broken"));
+  };
   R.team = (el) => { el.innerHTML = M.team.map((t, i) => `<div class="team" data-reveal style="--i:${i}"><span class="avatar lg">${esc(t.name[0])}</span><h3>${esc(t.name)}</h3><span class="role">${esc(t.role)}</span><p>${esc(t.text)}</p>${t.quote ? `<p class="team-quote">“${esc(t.quote)}”</p>` : ""}${t.links ? `<div class="cluster mt-2">${t.links.map((l) => `<a class="link-arrow" href="${esc(l.href)}" ${l.external ? 'target="_blank" rel="noopener noreferrer"' : ""}>${esc(l.label)} ${arrowUp}</a>`).join("")}</div>` : ""}</div>`).join(""); };
   R.principles = (el) => { el.innerHTML = M.principles.map((p, i) => `<div class="principle" data-reveal style="--i:${i}"><span class="tag">${esc(p.tag)}</span><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div>`).join(""); };
 

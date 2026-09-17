@@ -17,7 +17,8 @@ dashboard**, and a split deployment (static frontend on GitHub Pages, backend as
 | Area | What is there |
 | --- | --- |
 | Frontend | 8 pages (Home, What We Build, Products, Projects, Community, About, Careers, Contact), one coherent animated "world" background, short opening sequence, cursor tracker, page transitions, product-mock kit, list+detail components, reduced-motion support, mobile-first layouts down to 360 px |
-| Community | Verified creator directory (name · handle · avatar · public subscriber count · channel link, each checked against the exact YouTube channel on 2026-09-16) |
+| About | Founder card using the official ETC mark (`etc-founder.jpg/.webp`), no invented team |
+| Community | Verified creator directory (name · handle · avatar · public subscriber count · channel link, 10 creators, each checked against the exact YouTube channel on 2026-09-17) |
 | Contact | Email (`mailto:`), copy-to-clipboard, Instagram (new tab, `noopener noreferrer`), and a project-request form with validation / loading / success / failure states |
 | Careers | 5 collaboration roles with details, application form with optional resume upload (PDF/DOC/DOCX ≤ 5 MB) |
 | Backend | FastAPI + SQLite: `POST /api/project-requests`, `POST /api/applications` (multipart), server-side validation, magic-byte file checks, honeypot + minimum-time spam protection, per-client rate limiting, audit log, optional Discord notification |

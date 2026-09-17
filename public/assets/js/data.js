@@ -179,14 +179,19 @@ ETC.communityDemo = [
    Avatars are the creators' public YouTube profile images, stored in assets/img/creators/.
    Ranking is by joined date (rank field), not by subscriber count. */
 ETC.creators = {
-  rankedBy: "joined date", verifiedAt: "2026-09-16", source: "YouTube channel pages (public subscriber count as displayed by YouTube)",
-  note: "Audience numbers are the public counts YouTube displayed on the verification date; they are not live.",
+  rankedBy: "joined date", verifiedAt: "2026-09-17", source: "YouTube channel pages (public subscriber count as displayed by YouTube)",
+  note: "Ranked by joined date. Audience numbers are the public counts YouTube displayed on the verification date; they are not live and do not affect the ranking. More creators are added as they are verified.",
   rows: [
-    { rank: 1, name: "Zaptroo Plays", handle: "@ZaptrooPlays", subscribers: "35K", platform: "YouTube", channelUrl: "https://www.youtube.com/@ZaptrooPlays", channelId: "UCrRDtqbqbC0n1uHel6-JUew", avatarUrl: "assets/img/creators/ZaptrooPlays.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-16" },
-    { rank: 2, name: "Kajuto", handle: "@Kajutoo", subscribers: "992K", platform: "YouTube", channelUrl: "https://www.youtube.com/@Kajutoo", channelId: "UCF5ksRyJ9DjjMScxLqPIcFw", avatarUrl: "assets/img/creators/Kajutoo.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-16" },
-    { rank: 3, name: "Rouckz", handle: "@RealRouckz", subscribers: "343", platform: "YouTube", channelUrl: "https://www.youtube.com/@RealRouckz", channelId: "UCLr67LxrHYCjwZPB3IsZLSQ", avatarUrl: "assets/img/creators/RealRouckz.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-16" },
-    { rank: 4, name: "UMESH X", handle: "@UMESHX_GAMER", subscribers: "54.1K", platform: "YouTube", channelUrl: "https://www.youtube.com/@UMESHX_GAMER", channelId: "UCB_eN9_IzSfJcvoi1sUT74Q", avatarUrl: "assets/img/creators/UMESHX_GAMER.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-16" },
-    { rank: 5, name: "Mystic Priya", handle: "@mysticpriya", subscribers: "4.65K", platform: "YouTube", channelUrl: "https://www.youtube.com/@mysticpriya", channelId: "UCBaBy8eHr8EPfp74jX2mINQ", avatarUrl: "assets/img/creators/mysticpriya.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-16" }
+    { rank: 1, name: "Kajuto", handle: "@Kajutoo", subscribers: "993K", platform: "YouTube", channelUrl: "https://www.youtube.com/@Kajutoo", channelId: "UCF5ksRyJ9DjjMScxLqPIcFw", avatarUrl: "assets/img/creators/Kajutoo.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 2, name: "UMESH X", handle: "@UMESHX_GAMER", subscribers: "54.1K", platform: "YouTube", channelUrl: "https://www.youtube.com/@UMESHX_GAMER", channelId: "UCB_eN9_IzSfJcvoi1sUT74Q", avatarUrl: "assets/img/creators/UMESHX_GAMER.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 3, name: "AayushLit", handle: "@AayushLit", subscribers: "38.2K", platform: "YouTube", channelUrl: "https://www.youtube.com/@AayushLit", channelId: "UCnP9sxLR3mSmOx3z4_qCu5A", avatarUrl: "assets/img/creators/AayushLit.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 4, name: "Zaptroo Plays", handle: "@ZaptrooPlays", subscribers: "35K", platform: "YouTube", channelUrl: "https://www.youtube.com/@ZaptrooPlays", channelId: "UCrRDtqbqbC0n1uHel6-JUew", avatarUrl: "assets/img/creators/ZaptrooPlays.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 5, name: "VexXD", handle: "@VexFr_1", subscribers: "7.74K", platform: "YouTube", channelUrl: "https://www.youtube.com/@VexFr_1", channelId: "UClvphUxileIksrXhN7pWxbA", avatarUrl: "assets/img/creators/VexFr_1.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 6, name: "Mystic Priya", handle: "@mysticpriya", subscribers: "4.65K", platform: "YouTube", channelUrl: "https://www.youtube.com/@mysticpriya", channelId: "UCBaBy8eHr8EPfp74jX2mINQ", avatarUrl: "assets/img/creators/mysticpriya.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 7, name: "SIRJOHNPVP", handle: "@sirjohn.exe20", subscribers: "1.67K", platform: "YouTube", channelUrl: "https://www.youtube.com/@sirjohn.exe20", channelId: "UCGBPTlAV54cHLlaX7H7ajVA", avatarUrl: "assets/img/creators/sirjohn.exe20.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 8, name: "Rouckz", handle: "@RealRouckz", subscribers: "343", platform: "YouTube", channelUrl: "https://www.youtube.com/@RealRouckz", channelId: "UCLr67LxrHYCjwZPB3IsZLSQ", avatarUrl: "assets/img/creators/RealRouckz.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 9, name: "Hamerplayz", handle: "@HamerplayzMc", subscribers: "48", platform: "YouTube", channelUrl: "https://www.youtube.com/@HamerplayzMc", channelId: "UCNloqfaBpwsPGBO0ZrNoa0A", avatarUrl: "assets/img/creators/HamerplayzMc.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" },
+    { rank: 10, name: "BROLYHUOFFICIAL", handle: "@BROLYHUOFFICIAL", subscribers: "2", platform: "YouTube", channelUrl: "https://www.youtube.com/@BROLYHUOFFICIAL", channelId: "UCz83lpkB302KvGI6NcX0U1g", avatarUrl: "assets/img/creators/BROLYHUOFFICIAL.jpg", avatarSource: "YouTube", verifiedAt: "2026-09-17" }
   ]
 };
 
@@ -201,7 +206,11 @@ ETC.roadmap = [
 ];
 ETC.roadmapBadge = { done: "badge-done", progress: "badge-progress", planned: "badge-planned", exploring: "badge-exploring" };
 
-/* ---- Who is behind it (no invented team) ---- */
+/* ---- Who is behind it (no invented team). The founder is the ETC brand entity, represented by the ETC logo. ---- */
+ETC.founder = { name: "ETC", role: "Founder · Builder", label: "Founded by ETC", image: "assets/img/etc-founder.jpg", imageWebp: "assets/img/etc-founder.webp", imageAlt: "ETC — the ETC Labs founder mark: an illustrated figure in an orange hoodie with headphones under a night sky, with the letters ETC",
+  focus: ["Design", "Engineering", "Infrastructure", "Community"],
+  text: "Designs, builds and ships everything in the lab — frontend, backend, admin, deployment. ETC Labs — Gen 1 is a one-person showcase for now.", quote: "Build it, test it, ship it, document it.",
+  links: [{ label: "Instagram @etcofficials", href: "https://www.instagram.com/etcofficials/", external: true }, { label: "GitHub", href: "https://github.com/etcofficials", external: true }] };
 ETC.team = [
   { name: "ETC", role: "Founder · Builder", text: "Designs, builds and ships everything in the lab — frontend, backend, admin, deployment. ETC Labs — Gen 1 is a one-person showcase for now.", quote: "Build it, test it, ship it, document it.", links: [{ label: "Instagram @etcofficials", href: "https://www.instagram.com/etcofficials/", external: true }, { label: "GitHub", href: "https://github.com/etcofficials", external: true }] }
 ];

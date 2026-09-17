@@ -31,7 +31,7 @@ with sync_playwright() as p:
     check("U3 what/why/how above the fold", len(hero) >= 6 and any("community" in h for h in hero) and any("Collaborate" in h for h in hero), f"{len(hero)} statements, join button: {join_label}")
     check("U3 how to participate is explicit", pg.evaluate("document.querySelector('#join').textContent.includes('Say what you make')"), "join steps present")
     rows = pg.evaluate("[...document.querySelectorAll('.board-row:not(.head) .creator .name')].map(e=>e.textContent)")
-    check("U3 creator directory shows verified rows with avatars", len(rows) == 5 and pg.evaluate("[...document.querySelectorAll('.avatar.img img')].every(i=>i.getAttribute('src').includes('creators/'))"), rows)
+    check("U3 creator directory shows verified rows with avatars", len(rows) == 10 and pg.evaluate("[...document.querySelectorAll('.avatar.img img')].every(i=>i.getAttribute('src').includes('creators/'))"), rows)
 
     # USER 4 — applicant: roles, requirements, apply
     pg.goto(B + "/careers.html", wait_until="load"); pg.wait_for_timeout(700)

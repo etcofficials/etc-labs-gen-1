@@ -1,5 +1,55 @@
 # ETC Labs — Gen 1 · Changelog
 
+## Gen 1 refinement (2026-09-17) — MXT delta audit, 10-creator directory, founder mark
+
+Read-only audit of the current public MXT site compared with ETC Labs. Only the genuinely useful differences were
+translated into ETC's own design; nothing was copied.
+
+### Delta audit summary
+- MXT now: single-page site (Home · About · Creation League · Careers as in-page sections), a 10-creator
+  leaderboard "Ranked by Joined Date" with hot-linked YouTube avatars and "--" for three creators without a count,
+  a founder spotlight section (quote + focus tags + Discord-hosted avatar), the same five tools (all "In
+  Development"/"Exploring"), three projects, five openings, one application form that now also asks for a phone
+  number and posts from the browser straight to a chat webhook, no contact email or social links, no footer links.
+- Useful for ETC and adopted: the expanded creator list (verified independently, not copied), real avatars
+  (self-hosted, not hot-linked), an explicit "--" rule for unavailable counts, a founder spotlight (implemented as
+  the ETC founder card with the real ETC mark, focus areas and quote).
+- Deliberately not copied: single-page navigation (worse for deep links/SEO), the phone field (unnecessary
+  personal data), browser-side webhook submission (exposes the webhook; ETC keeps its server-side API), hot-linked
+  avatars, removal of contact channels, MXT product/community names.
+
+### Creator directory (verified 2026-09-17 against each channel page; counts static)
+| # | Creator | Handle | Channel id | Subscribers | Avatar |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Kajuto | @Kajutoo | UCF5ksRyJ9DjjMScxLqPIcFw | 993K | real |
+| 2 | UMESH X | @UMESHX_GAMER | UCB_eN9_IzSfJcvoi1sUT74Q | 54.1K | real |
+| 3 | AayushLit | @AayushLit | UCnP9sxLR3mSmOx3z4_qCu5A | 38.2K | real |
+| 4 | Zaptroo Plays | @ZaptrooPlays | UCrRDtqbqbC0n1uHel6-JUew | 35K | real |
+| 5 | VexXD | @VexFr_1 (the supplied @Vexx1_1 does not exist) | UClvphUxileIksrXhN7pWxbA | 7.74K | real |
+| 6 | Mystic Priya | @mysticpriya | UCBaBy8eHr8EPfp74jX2mINQ | 4.65K | real |
+| 7 | SIRJOHNPVP | @sirjohn.exe20 (the supplied @sirjohn.exe2 does not exist) | UCGBPTlAV54cHLlaX7H7ajVA | 1.67K | real |
+| 8 | Rouckz | @RealRouckz | UCLr67LxrHYCjwZPB3IsZLSQ | 343 | real |
+| 9 | Hamerplayz | @HamerplayzMc | UCNloqfaBpwsPGBO0ZrNoa0A | 48 | real |
+| 10 | BROLYHUOFFICIAL | @BROLYHUOFFICIAL | UCz83lpkB302KvGI6NcX0U1g | 2 | real |
+
+Ranking is by joined date (labelled); subscriber counts are informational metadata. Avatars are the creators'
+public YouTube profile images (176 px, 7–22 KB) in `public/assets/img/creators/<handle>.jpg`, with an
+initial-letter fallback if an image fails.
+
+### Founder mark (About)
+The "one builder" card now uses the official ETC mark (`assets/img/etc-founder.jpg` 512 px + `.webp`, square
+crop of the supplied artwork, no redesign) in a circular frame at 200 px (148 px on phones), with "Founded by ETC",
+role, description, quote, focus chips and links; subtle border/scale hover, reduced-motion safe, alt text, and a
+text fallback if the image fails. No human name invented.
+
+### Fixes
+- Creator board: a 52 px gap under the column header (generic `.head` margin leaking onto `.board-row.head`).
+
+### Tests (this update)
+audit.py 16/16 renders clean · e2e.py 30/30 · static_sim.py 15/15 · persona_test.py 13/13 (now checks 10 rows) ·
+perf.py 60 fps at 4× throttle · broken-image fallbacks for avatars and founder mark verified · live check after deploy.
+No backend changes.
+
 ## Gen 1 final build (2026-09-16) — branding, contact, backend deployment, creator audit
 
 This pass took the approved design and made it ETC Labs' own. The visual system (world background, opening,

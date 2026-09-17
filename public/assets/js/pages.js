@@ -61,7 +61,7 @@
       R.communityGraph($("#graph")); R.communityWhy($("#why")); R.communityFeatures($("#features")); R.communityCards($("#members")); R.chips($("#who"), M.communityWho); R.creators($("#board"));
       R.roadmap($("#roadmap-list"), (r) => r.major || r.title.indexOf("Community") > -1);
     },
-    about() { R.principles($("#principles")); R.team($("#team")); },
+    about() { R.principles($("#principles")); R.founder($("#founder")); },
     careers() {
       const select = R.listDetail({ list: $("#role-list"), detail: $("#role-detail"), items: M.roles.map((r) => ({ ...r, small: `${r.team} · ${r.type}${r.remote ? " · Remote" : ""}` })), key: "key", cursorLabel: "View role",
         render: (r) => `<div class="role-detail"><span class="kicker">${esc(r.team)}</span><h2>${esc(r.title)}</h2><div class="role-meta"><span class="chip sm">${esc(r.type)}</span>${r.remote ? '<span class="chip sm">Remote</span>' : ""}<span class="chip sm">Applications open</span></div><p class="lead">${esc(r.summary)}</p>
